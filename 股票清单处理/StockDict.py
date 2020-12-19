@@ -24,14 +24,20 @@ class StockDict:
     # 从股票字典获取股票代码
     #################################################
     def getStockId(self):
-        for stockId in self.stockDict["timeToMarket"]:
+        for stockId in self.stockDict[pf.股票清单表头[1]]:
             self.stockIdList.append(stockId)
+            print(stockId, self.stockDict[pf.股票清单表头[1]][stockId])
+        #for stockId in self.stockDict["timeToMarket"]:
+            #self.stockIdList.append(stockId)
 
 if __name__ == '__main__':
     aa = StockDict()
-    for stockId in aa.stockDict["timeToMarket"]:
-        print(stockId,aa.stockDict["timeToMarket"][stockId])
+    #for stockId in aa.stockDict["timeToMarket"]:
+        #print(stockId,aa.stockDict["timeToMarket"][stockId])
 
     for element in aa.stockIdList:
         print(element)
+
+    for k,v in aa.stockDict.items():
+        print(k,"----------",v)
 
