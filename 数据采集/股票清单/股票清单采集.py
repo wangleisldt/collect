@@ -49,8 +49,11 @@ def 处理返回值(content):
     str_dict = content[content.find('(')+1:-2]
     stock_list = json.loads(str_dict)["data"]["diff"]
 
+    for e in stock_list:
+        print(e)
+
     df = pd.DataFrame(stock_list)
-    return_df = df[['f12','f14','f15','f3','f4','f5','f6','f7','f15','f16','f17','f18','f10','f8','f9','f23','f20','f21','f24','f25','f26']]
+    return_df = df[['f12','f14','f15','f3','f4','f5','f6','f7','f15','f16','f17','f18','f10','f8','f9','f23','f20','f21','f24','f25','f26','f27']]
     return_df.columns = pf.股票清单表头
 
     return return_df
