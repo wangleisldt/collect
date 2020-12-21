@@ -1,7 +1,6 @@
 from 函数目录 import profile as pf
-from 函数目录.function import check_file_exist,save_file_dataframe_to_execl
+from 函数目录.function import check_file_exist
 import pandas as pd
-import pickle
 
 base_dir_name = "%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.交易数据)
 dirname = "%s%s%s%s%s" % (base_dir_name, pf.SEPARATOR, pf.历史行情, pf.SEPARATOR, pf.后复权)

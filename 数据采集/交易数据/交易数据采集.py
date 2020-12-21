@@ -1,15 +1,7 @@
-import requests
-import json
-import chardet
 import pandas as pd
-import time
-import pickle
-import os,shutil
 from 函数目录 import profile as pf
-from 函数目录.function import checkAndCreateDir, check_file_exist
 from 数据采集.股票清单.股票清单获取 import StockDict
-from 函数目录.date import getCurrentDate
-from 数据采集.标准类.采集标准类 import 请求数据_原始,采集标准类
+from 数据采集.标准类.采集标准类 import 采集标准类
 from 数据采集.交易数据.交易数据保存 import 保存交易数据
 
 #原始url为：
@@ -57,5 +49,5 @@ def _处理返回值(list):
     return df
 
 if __name__ == '__main__':
-    根据全量股票进行获取(day_limit='98888888889')
+    根据全量股票进行获取(day_limit='999999999999')
 
