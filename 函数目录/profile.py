@@ -9,6 +9,16 @@ SEPARATOR = "/"
 #两个后缀文件的结尾
 Execl = ".xlsx"
 PklFile = ".pkl"
+PklFile_GZ = ".pkl.gz"
+'''
+proxies = {
+    'http':'http://10.5.22.68:8118',
+    'https':'https://10.5.22.68:8118'
+}
+#'http':'http://用户名:密码@IP:端口号',
+#'https':'https://用户名:密码@IP:端口号'
+'''
+proxies = None
 
 #数据库的连接串
 DATABASE_STRING_沪深港通持股 = 'sqlite:////home/wangleisldt/collect_data/sqlite3/hsgtcg.db'
@@ -31,11 +41,14 @@ CompanyProfitStatement = '公司利润表'
 #股票列表目录、文件常量
 StockList = "股票列表"
 StockListFilename = "stocklist"
+
 #一些表头
 股票清单表头 = ['股票代码', '股票名称', '最新价', '涨跌幅', '涨跌额', '成交量(手)', '成交额', '振幅', '最高', '最低', '今开', '昨收', '量比' , '换手率', '市盈率(动态)', '市净率', '总市值', '流通市值', '60日涨跌幅', '年初至今涨跌幅', '上市日期','交易市场',]
+股票日交易表头 = [  '日期', '开盘', '收盘', '最高', '最低',  '成交量', '成交额','振幅', '涨跌幅', '涨跌额', '换手率']
 
 #交易数据目录常量
 TransactionData = "交易数据"
+交易数据 = "交易数据"
 
 #投资者关系活动记录表
 投资者关系活动记录表="投资者关系活动记录表"
@@ -53,7 +66,7 @@ TransactionData = "交易数据"
 步骤四 = '步骤四'
 
 
-#行情数据
+#老行情数据
 HistoryData = "历史行情"
 RehabilitationOfHistoricalData = "复权数据"
 Qfq = "qfq"
@@ -62,6 +75,12 @@ Hfq = "hfq"
 
 RealtimeQuotesData = "实时行情"
 StockRealtimeQuotesDataFilename = "StockRealtimeQuotes"
+
+#行情数据
+历史行情 = "历史行情"
+#前复权 = "前复权"
+后复权 = "后复权"
+
 
 
 AfterFinishingData = "整理后的数据目录"

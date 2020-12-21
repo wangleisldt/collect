@@ -40,6 +40,7 @@ def save_file_dataframe_to_execl(dirname,filename,df):
         print("文件存在！")
     else:
         full_filename = dirname + pf.SEPARATOR +filename
+        print(full_filename)
         df.to_excel(full_filename)
         print("%s  保存文件成功。" % (full_filename))
 
