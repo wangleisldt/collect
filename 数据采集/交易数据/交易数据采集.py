@@ -19,13 +19,16 @@ def 根据全量股票进行获取(fqt='2', day_limit='9999999999999'):
         print("开始获取%s股票交易数据" % (stockid))
         instance = 采集标准类(url = _根据参数产生url(market, stockid, fqt=fqt, day_limit=day_limit))
         list = instance._获取数据_json()
-        df = _处理返回值(list)
-        if df is not None:
-            print("开始保存股票列表")
-            保存交易数据(stockid,df)
-            #print("结束保存股票列表")
+        if list is not None:
+            df = _处理返回值(list)
+            if df is not None:
+                print("开始保存股票列表")
+                保存交易数据(stockid,df)
+                #print("结束保存股票列表")
+            else:
+                print("无交易数据")
         else:
-            print("无交易数据")
+            print("采集报错")
 
 def _获取股票清单和交易市场():
     stockid_market_list = StockDict().stock_id_market
@@ -49,5 +52,5 @@ def _处理返回值(list):
     return df
 
 if __name__ == '__main__':
-    根据全量股票进行获取(day_limit='999999999999')
+    根据全量股票进行获取(day_limit='9999999999')
 

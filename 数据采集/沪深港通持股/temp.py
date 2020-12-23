@@ -39,21 +39,12 @@ class 沪深港通持股():
         checkAndCreateDir(self.dirname_步骤四)
 
     def _将字典保存成Execl文件(self,dict,filename):
-        with pd.ExcelWriter(filename) as writer:
-            for e in sorted(dict.keys()):
-                dict[e].to_excel(writer, sheet_name=e)
-        #writer.save()
-        #writer.close()
-
-        '''
         #print(dict,filename)
         writer = pd.ExcelWriter(filename)  # 产生保存文件
         for e in sorted(dict.keys()):
             dict[e].to_excel( writer , sheet_name=e )
         writer.save()
         writer.close()
-        '''
-
 
     def 根据全量股票进行获取(self,from_stockid="000000",sleep_stock_num= 500,sleep_sec = 5):
         writer = pd.ExcelWriter(self.dirname_步骤一 + pf.步骤一 + getCurrentDate() + pf.Execl) #产生保存文件

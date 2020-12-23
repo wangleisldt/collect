@@ -3,6 +3,7 @@ from 函数目录 import profile as pf, date
 from 函数目录.function import checkAndCreateDir
 import pandas as pd
 from 数据采集.标准类.采集标准类 import 采集标准类
+import joblib
 
 '''
 
@@ -92,6 +93,11 @@ def getStockList():
         pickle.dump(stockDict, output)
         output.close()
 
+        filename = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.GZ)
+        joblib.dump(stockDict, filename, compress=3 , protocol=None)
+        filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.GZ)
+        joblib.dump(stockDict, filename, compress=3, protocol=None)
+
         print("结束保存股票列表")
 
     except:
@@ -99,3 +105,15 @@ def getStockList():
 
 if __name__ == '__main__':
     getStockList()
+
+'''
+filename = '/home/wangleisldt/collect_data/基本面数据/股票列表/stocklist.gz'
+    obj = joblib.load(filename, mmap_mode=None)
+
+    print(type(obj))
+
+    for k,v in obj.items():
+        print(k,'-------',v)
+
+'''
+

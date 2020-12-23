@@ -4,9 +4,9 @@ import 交易数据.实时交易数据 as sp
 import 函数目录.CalculateFuncation as cal
 import 基本面数据.FundamentalExeclToDict as fetd
 import 策略.获取文件数据到字典 as ftd
-import 股票清单处理.StockDict as sd
+#import 股票清单处理.StockDict as sd
 from 函数目录 import profile as pf
-
+from 数据采集.股票清单.股票清单获取 import StockDict as sd
 
 class  GrossProfitRatePolicy():
     # 初始化

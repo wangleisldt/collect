@@ -2,8 +2,9 @@ import pandas as pd
 
 import 函数目录.profile as pf
 import 策略.获取文件数据到字典 as ftd
-import 股票清单处理.StockDict as sd
+#import 股票清单处理.StockDict as sd
 from 函数目录 import CalculateFuncation as cal
+from 数据采集.股票清单.股票清单获取 import StockDict as sd
 
 
 class GrowthPolicy():

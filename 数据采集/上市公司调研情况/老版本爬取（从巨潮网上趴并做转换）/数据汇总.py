@@ -1,5 +1,5 @@
 from 函数目录 import profile as pf
-from 股票清单处理.StockDict import StockDict
+from 数据采集.股票清单.股票清单获取 import StockDict
 import pickle
 import pandas as pd
 from 函数目录.date import getYearMonthFromMonthLength

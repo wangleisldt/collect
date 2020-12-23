@@ -10,6 +10,7 @@ SEPARATOR = "/"
 Execl = ".xlsx"
 PklFile = ".pkl"
 PklFile_GZ = ".pkl.gz"
+GZ = '.gz'
 '''
 proxies = {
     'http':'http://10.5.22.68:8118',

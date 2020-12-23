@@ -1,12 +1,15 @@
 import pickle
 
 from 函数目录 import profile as pf
+import joblib
 
 
 class StockDict:
     # 初始化
     def __init__(self):
-        self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR, pf.StockListFilename, pf.PklFile)
+        #self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR, pf.StockListFilename, pf.PklFile)
+        self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR,pf.StockListFilename, pf.GZ)
+
         self.stockDict = {}
         self.stockIdList = []
         self.stock_id_market = []
@@ -18,9 +21,10 @@ class StockDict:
     # 获取股票清单到Dict(类初始化时自动加载)
     #################################################
     def getStockFromFileToDict(self):
-        pklFile = open( self.filename , 'rb')
-        self.stockDict = pickle.load(pklFile)
-        pklFile.close()
+        #pklFile = open( self.filename , 'rb')
+        #self.stockDict = pickle.load(pklFile)
+        #pklFile.close()
+        self.stockDict = joblib.load(self.filename, mmap_mode=None)
 
     #################################################
     # 从股票字典获取股票代码

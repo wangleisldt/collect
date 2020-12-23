@@ -1,6 +1,7 @@
 import tushare as ts
 
-import 股票清单处理.StockDict as sd
+#import 股票清单处理.StockDict as sd
+from 数据采集.股票清单.股票清单获取 import StockDict as sd
 from 函数目录 import profile as pf, date, function
 
 

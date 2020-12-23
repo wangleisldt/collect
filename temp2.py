@@ -1,15 +1,8 @@
-import requests
-import json
-import chardet
+
 import pandas as pd
-import time
-import pickle
-import os,shutil
 from 函数目录 import profile as pf
-from 函数目录.function import checkAndCreateDir, check_file_exist
 from 数据采集.股票清单.股票清单获取 import StockDict
-from 函数目录.date import getCurrentDate
-from 数据采集.标准类.采集标准类 import 请求数据_原始,采集标准类
+from 数据采集.标准类.采集标准类 import 采集标准类
 
 
 #原始url为：

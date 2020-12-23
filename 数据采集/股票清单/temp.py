@@ -1,10 +1,9 @@
 import pickle
 from 函数目录 import profile as pf, date
 from 函数目录.function import checkAndCreateDir
-from 数据采集.标准类.采集标准类 import 请求数据
-import json
 import pandas as pd
-from 数据采集.标准类.采集标准类 import 请求数据_原始,采集标准类
+from 数据采集.标准类.采集标准类 import 采集标准类
+import joblib
 
 '''
 
@@ -94,6 +93,10 @@ def getStockList():
         pickle.dump(stockDict, output)
         output.close()
 
+        filename = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.GZ)
+        print(filename)
+        joblib.dump(stockDict, filename, compress=3 , protocol=None)
+
         print("结束保存股票列表")
 
     except:
@@ -101,3 +104,6 @@ def getStockList():
 
 if __name__ == '__main__':
     getStockList()
+
+
+

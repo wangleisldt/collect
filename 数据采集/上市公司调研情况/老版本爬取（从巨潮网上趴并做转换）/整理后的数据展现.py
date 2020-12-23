@@ -2,7 +2,7 @@ from 函数目录 import profile as pf
 from 函数目录.function import checkAndCreateDir
 from 函数目录.date import getYearMonthFromMonthLength
 
-from 股票清单处理.StockDict import StockDict
+from 数据采集.股票清单.股票清单获取 import StockDict
 import pandas as pd
 
 from 数据采集.上市公司调研情况.数据汇总 import 上市公司调研情况月度数据处理
