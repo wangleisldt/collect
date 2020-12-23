@@ -84,6 +84,7 @@ def getStockList():
         data.to_excel(filenameDate,index=False)
 
         # 保存成pkl文件
+        '''
         filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.PklFile)
         filenameDate = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.PklFile)
         output = open(filename, 'wb')
@@ -92,7 +93,8 @@ def getStockList():
         output = open(filenameDate, 'wb')
         pickle.dump(stockDict, output)
         output.close()
-
+        '''
+        
         filename = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.GZ)
         joblib.dump(stockDict, filename, compress=3 , protocol=None)
         filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.GZ)
