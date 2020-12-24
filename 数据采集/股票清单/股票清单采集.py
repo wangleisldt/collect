@@ -94,7 +94,7 @@ def getStockList():
         pickle.dump(stockDict, output)
         output.close()
         '''
-        
+
         filename = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.GZ)
         joblib.dump(stockDict, filename, compress=3 , protocol=None)
         filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.GZ)
