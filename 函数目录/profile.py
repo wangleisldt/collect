@@ -9,17 +9,20 @@ SEPARATOR = "/"
 #两个后缀文件的结尾
 Execl = ".xlsx"
 PklFile = ".pkl"
-PklFile_GZ = ".pkl.gz"
 GZ = '.gz'
+
+#采集的时候是否使用代理服务器
+proxies = None
 '''
 proxies = {
     'http':'http://10.5.22.68:8118',
     'https':'https://10.5.22.68:8118'
 }
+'''
 #'http':'http://用户名:密码@IP:端口号',
 #'https':'https://用户名:密码@IP:端口号'
-'''
-proxies = None
+
+
 
 #数据库的连接串
 DATABASE_STRING_沪深港通持股 = 'sqlite:////home/wangleisldt/collect_data/sqlite3/hsgtcg.db'

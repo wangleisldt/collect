@@ -123,6 +123,20 @@ def get_1_quarter_before(year,quarter):
     return year,quarter
 
 #################################################
+# 计算给定日期的前一个季度
+# 入参 日期  2015
+# 入参 月份数量  1
+# 返回 2015,2
+#################################################
+def get_1_quarter_after(year,quarter):
+    if  quarter == 4:
+        year = year + 1
+        quarter = 1
+    else:
+        quarter = quarter + 1
+    return year,quarter
+
+#################################################
 # 给定一天，计算后几天
 # 入参 日期  20151231
 # 入参 增加几天  1
@@ -143,6 +157,8 @@ if __name__ == '__main__':
     print(getYearQuarterMinusQuarter("2017","3",6))
     print(getYearMonthFromMonthLength("201503",34))
     print(后几天("20181231",2))
+    print(get_1_quarter_after(2020,4))
+
 
 
 
