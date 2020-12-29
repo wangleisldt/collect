@@ -26,6 +26,15 @@ class 采集标准类():
         except:
             return None
 
+    def _获取数据(self):
+        try:
+            response = requests.get(self.url,headers=self.headers,params=self.params,proxies=self.proxies,timeout=self.timeout)
+            #print(response.url)
+            fencoding = chardet.detect(response.content)
+            content = response.content.decode(fencoding['encoding'],errors = 'ignore')
+            return content
+        except:
+            return None
+
 if __name__ == '__main__':
     pass
-    #print(dict)

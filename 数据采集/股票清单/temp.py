@@ -48,13 +48,22 @@ def _处理返回值(content):
     stock_list = content["data"]["diff"]
 
     df = pd.DataFrame(stock_list)
-    return_df = df[['f12','f14','f15','f3','f4','f5','f6','f7','f15','f16','f17','f18','f10','f8','f9','f23','f20','f21','f24','f25','f26','f27']]
+
+    '''
+        print(df)
+        StockListDir = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR
+        filenameDate = '%s%s%s%s' % (StockListDir, "aaa", date.getCurrentDate(), pf.Execl)
+        df.to_excel(filenameDate, index=False)
+        exit()
+    '''
+
+    return_df = df[['f12','f14','f15','f3','f4','f5','f6','f7','f15','f16','f17','f18','f10','f8','f9','f23','f20','f21','f24','f25','f26','f27','f38','f39','f100','f102','f103','f234']]
     return_df.columns = pf.股票清单表头
 
     return return_df
 
 def _根据参数产生url(page_size=90000000):
-    url = "http://91.push2.eastmoney.com/api/qt/clist/get?pn=1&pz={}&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f3&fs=m:0+t:6,m:0+t:13,m:0+t:80,m:1+t:2,m:1+t:23".format(page_size)
+    url = "http://91.push2.eastmoney.com/api/qt/clist/get?pn=1&pz={}&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f3&fields=f12,f14,f15,f3,f4,f5,f6,f7,f15,f16,f17,f18,f10,f8,f9,f23,f20,f21,f24,f25,f26,f27,f38,f39,f100,f102,f103,f234&fs=m:0+t:6,m:0+t:13,m:0+t:80,m:1+t:2,m:1+t:23".format(page_size)
     return url
 
 def getStockList():
@@ -84,6 +93,7 @@ def getStockList():
         data.to_excel(filenameDate,index=False)
 
         # 保存成pkl文件
+        '''
         filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.PklFile)
         filenameDate = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.PklFile)
         output = open(filename, 'wb')
@@ -92,10 +102,12 @@ def getStockList():
         output = open(filenameDate, 'wb')
         pickle.dump(stockDict, output)
         output.close()
+        '''
 
         filename = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.GZ)
-        print(filename)
         joblib.dump(stockDict, filename, compress=3 , protocol=None)
+        filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.GZ)
+        joblib.dump(stockDict, filename, compress=3, protocol=None)
 
         print("结束保存股票列表")
 
@@ -105,5 +117,14 @@ def getStockList():
 if __name__ == '__main__':
     getStockList()
 
+'''
+filename = '/home/wangleisldt/collect_data/基本面数据/股票列表/stocklist.gz'
+    obj = joblib.load(filename, mmap_mode=None)
 
+    print(type(obj))
+
+    for k,v in obj.items():
+        print(k,'-------',v)
+
+'''
 
