@@ -1,7 +1,7 @@
 import tushare as ts
 
 #import 股票清单处理.StockDict as sd
-from 数据采集.股票清单.股票清单获取 import StockDict as sd
+from 数据采集.股票清单.股票清单获取 import StockDict
 from 函数目录 import profile as pf, date, function
 
 
@@ -95,7 +95,7 @@ class RehabilitationOfHistoricalData:
 # 获取所有股票所有复权数据和历史数据
 #################################################
 def getStockAllData():
-    instanceStockDict = sd.StockDict()
+    instanceStockDict = StockDict()
     for stockId in sorted(instanceStockDict.stockDict["timeToMarket"].keys()):#对股票代码进行排序，下面那句不排序
     #for stockId in instanceStockDict.stockDict["timeToMarket"]:
         yearAndLength = date.getYearLength(str(instanceStockDict.stockDict["timeToMarket"][stockId]))
@@ -109,10 +109,10 @@ def getStockAllData():
 # 入参：年：2016
 #################################################
 def getStockYearData(year,qfq=False):
-    instanceStockDict = sd.StockDict()
+    instanceStockDict = StockDict()
 
     aa = RehabilitationOfHistoricalData(StockNumber="", QFQ=qfq,YEAR=str(year) )
-    for stockId in sorted(instanceStockDict.stockDict["timeToMarket"].keys()):  # 对股票代码进行排序，下面那句不排序
+    for stockId in sorted(instanceStockDict.stockDict[pf.股票清单表头[1]].keys()):  # 对股票代码进行排序，下面那句不排序
     #for stockId in instanceStockDict.stockDict["timeToMarket"]:
         aa.StockNumber = stockId
         aa.getHistoricalDataYear()

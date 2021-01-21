@@ -7,6 +7,7 @@ from 数据采集.三张报表.采集企业类型 import 读取企业类型,采�
 import json
 from 函数目录.function import checkAndCreateDir
 import joblib
+import time
 
 '''
 总表
@@ -36,26 +37,33 @@ def 根据全量股票进行获取(year, quarter,type):
     print("开始获取数据：")
     return_dict = {}
     for element in stockid_market_list:
+        #time.sleep(1)
         stockid, market = element
         print("开始获取%s股票数据" % (stockid))
         company_type = 读取企业类型()
-        instance = 采集标准类(url = _根据参数产生url(stockid,market,report_type,end_date = end_date , company_type_dict = company_type ))
-        return_list = instance._获取数据_json()
-        if report_type != 'MainTarget':
-            list = json.loads(return_list)
-        else:
-            list = return_list
-        if list is not None:
-            dict = _处理返回值(list,str(year)+pf.End_OF_SEASON_DAY[quarter],report_type)
-            if dict is not None:
-                #print(dict)
-                #for k,v in dict.items():
-                    #print(k,"------------",v)
-                return_dict[stockid]=dict
+        if stockid in company_type.keys():
+            instance = 采集标准类(url = _根据参数产生url(stockid,market,report_type,end_date = end_date , company_type_dict = company_type ))
+            return_list = instance._获取数据_json()
+            if report_type != 'MainTarget':
+                if return_list is not None:
+                    list = json.loads(return_list)
+                else:
+                    list = None
+            else:
+                list = return_list
+            if list is not None:
+                dict = _处理返回值(list,str(year)+pf.End_OF_SEASON_DAY[quarter],report_type)
+                if dict is not None:
+                    #print(dict)
+                    #for k,v in dict.items():
+                        #print(k,"------------",v)
+
+                    return_dict[stockid]=dict
+
+                else:
+                    print("无数据")
             else:
                 print("无数据")
-        else:
-            print("无数据")
 
     _保存财务分析(return_dict, type, str(year)+str(quarter))
 
@@ -82,10 +90,12 @@ def _根据参数产生url(stockid,market,type,end_date,company_type_dict):
     http://f10.eastmoney.com/f10_v2/FinanceAnalysis.aspx?code=sz000001
     <input id="hidctype" type="hidden" value="3" />
     '''
+
     if type == 'MainTarget':
         url = 'http://f10.eastmoney.com/NewFinanceAnalysis/{}Ajax?type=0&endDate={}&code={}{}'.format(type,end_date,market,stockid )
     else:
         url = 'http://f10.eastmoney.com/NewFinanceAnalysis/{}Ajax?companyType={}&reportDateType=0&reportType=1&endDate={}&code={}{}'.format(type,company_type_dict[stockid],end_date,market,stockid )
+    #print(url)
     return url
 
 def _处理返回值(list,date,type):
@@ -118,16 +128,16 @@ def _保存财务分析(input_dict,type,date):
     joblib.dump(input_dict, filename_gz, compress=3, protocol=None)
 
 def 获取全部数据(year,quarter):
-    根据全量股票进行获取(year, quarter, '主表')
+    #根据全量股票进行获取(year, quarter, '主要指标')
     根据全量股票进行获取(year,quarter, '资产负债表')
     根据全量股票进行获取(year,quarter, '现金流量表')
     根据全量股票进行获取(year,quarter, '利润表')
 
 if __name__ == '__main__':
     #采集企业类型()
-    #获取全部数据(2020,3)
+    #获取全部数据(2018,1)
 
-    根据全量股票进行获取(2020,3 , '主要指标')
-    #根据全量股票进行获取( 2020,3 , '资产负债表')
+    #根据全量股票进行获取(2020,3 , '主要指标')
+    根据全量股票进行获取( 2020,3 , '资产负债表')
     #根据全量股票进行获取(2020, 3, '现金流量表')
     #根据全量股票进行获取(2020, 3, '利润表')

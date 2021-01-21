@@ -4,9 +4,9 @@ import pandas as pd
 import joblib
 from 数据采集.沪深港通持股.沪深港通持股 import 沪深港通持股
 
-Path = "/home/wangleisldt/collect_data/基本面数据/沪深港通持股/历史数据/2019/"
+Path = "/home/wangleisldt/collect_data/基本面数据/沪深港通持股/历史数据/2020/"
 OUTPUT_PATH = '/home/wangleisldt/collect_data/基本面数据/沪深港通持股/历史数据/'
-OUTPUT_FILENAME='2019'
+OUTPUT_FILENAME='2020'
 
 def 格式转换(Path = Path):
     #将execl文件转换为gz文件。

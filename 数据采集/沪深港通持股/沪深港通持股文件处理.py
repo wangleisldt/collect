@@ -29,6 +29,7 @@ def 步骤三():
 
 def 步骤二():
     DF_HEAD = 35
+
     沪深港通持股_instance = 沪深港通持股()
     dict_df_步骤二 = joblib.load(沪深港通持股_instance.dirname_步骤二 + pf.步骤二 + pf.GZ, mmap_mode=None)
 
@@ -96,7 +97,7 @@ def 步骤一():
 
 
 if __name__ == '__main__':
-    步骤一()
+    #步骤一()
     #查看gz文件()
     #步骤二()
-    #步骤三()
+    步骤三()
