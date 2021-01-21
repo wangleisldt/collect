@@ -13,7 +13,7 @@ from 数据采集.财务分析.财务分析_对外接口 import 数据采集加�
 if __name__ == '__main__':
 
     #获取股票清单
-    getStockList()
+    #getStockList()
 
     #获取沪深港通持股数据
     沪深港通持股数据_全流程()
