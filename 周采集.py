@@ -1,5 +1,4 @@
 # encoding:utf-8
-
 from 数据采集.股票清单.股票清单采集 import getStockList
 
 from 数据采集.沪深港通持股.沪深港通持股 import 沪深港通持股
