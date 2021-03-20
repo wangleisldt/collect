@@ -22,6 +22,6 @@ if __name__ == '__main__':
     #aa = 财务指标读取('利润表', 20203)
     for k,v in aa.items():
         print(k)
-
+    #
         for key,val in v.items():
             print(key,'---------',val)

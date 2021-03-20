@@ -67,7 +67,7 @@ def 读取企业类型():
     return joblib.load(filename_gz, mmap_mode=None)
 
 if __name__ == '__main__':
-    #采集企业类型()
+    采集企业类型()
     aa = 读取企业类型()
     for k,v in aa.items():
         print(k,v)
