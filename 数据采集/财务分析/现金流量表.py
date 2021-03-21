@@ -69,7 +69,7 @@ def _获取_现金流量表(year, quarter, stockId , pageNo, dataArr, retry_coun
         time.sleep(pause)
         try:
             request = Request(ct.现金流量表_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
-            #print(ct.财务指标_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
+            print(ct.财务指标_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
             text = urlopen(request, timeout=10).read()
             text = text.decode('GBK')
             text = text.replace('--', '无')
@@ -136,5 +136,5 @@ if __name__ == '__main__':
     ##################################
 
 
-    获取_全量股票_现金流量表_某个季度(2017,3)
+    获取_全量股票_现金流量表_某个季度(2020,3)
 
