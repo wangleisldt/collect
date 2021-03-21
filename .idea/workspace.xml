@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="265c7f22-8302-436e-92ad-bfff55957599" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/数据采集/财务分析/采集标准类.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/数据采集/财务分析/现金流量表.py" beforeDir="false" afterPath="$PROJECT_DIR$/数据采集/财务分析/现金流量表.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/数据采集/财务分析/采集标准类.py" beforeDir="false" afterPath="$PROJECT_DIR$/数据采集/财务分析/采集标准类.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -73,8 +72,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/数据采集/财务分析/采集标准类.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="143">
-              <caret line="27" column="17" lean-forward="true" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
+            <state relative-caret-position="132">
+              <caret line="41" selection-start-line="41" selection-end-line="41" />
               <folding>
                 <element signature="e#18#29#0" expanded="true" />
               </folding>
@@ -1822,7 +1821,7 @@
       <workItem from="1616140049668" duration="1090000" />
       <workItem from="1616225828650" duration="448000" />
       <workItem from="1616226870684" duration="7873000" />
-      <workItem from="1616301736759" duration="549000" />
+      <workItem from="1616301736759" duration="2112000" />
     </task>
     <task id="LOCAL-00001" summary="test1">
       <created>1608356089916</created>
@@ -1964,11 +1963,18 @@
       <option name="project" value="LOCAL" />
       <updated>1616235798536</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="commit-20210321">
+      <created>1616302310020</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1616302310020</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="307638000" />
+    <option name="totallyTimeSpent" value="309201000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1981,13 +1987,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3290469" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.6475038" visible="true" weight="0.2831424" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.6475038" visible="true" weight="0.5106383" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49621785" weight="0.45171848" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -1998,7 +2005,7 @@
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Database" order="11" sideWeight="0.4969743" weight="0.3289689" />
       <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49546143" weight="0.3289689" />
-      <window_info anchor="bottom" id="Event Log" order="13" sideWeight="0.3524962" side_tool="true" visible="true" weight="0.2831424" />
+      <window_info anchor="bottom" id="Event Log" order="13" sideWeight="0.3524962" side_tool="true" visible="true" weight="0.5106383" />
       <window_info anchor="bottom" x="22" y="254" width="1322" height="220" id="Python Console" order="14" sideWeight="0.7700454" weight="0.2667758" />
       <window_info anchor="right" x="0" y="0" width="295" height="544" id="Documentation" order="0" sideWeight="0.502439" side_tool="true" visible="true" weight="0.022692889" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
@@ -2014,7 +2021,8 @@
     <MESSAGE value="test1" />
     <MESSAGE value="commit-20201219" />
     <MESSAGE value="commit-20201221" />
-    <option name="LAST_COMMIT_MESSAGE" value="commit-20201221" />
+    <MESSAGE value="commit-20210321" />
+    <option name="LAST_COMMIT_MESSAGE" value="commit-20210321" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2033,7 +2041,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/collect$.coverage" NAME="采集标准类 Coverage Results" MODIFIED="1616302055726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/数据采集/财务分析" />
+    <SUITE FILE_PATH="coverage/collect$.coverage" NAME="采集标准类 Coverage Results" MODIFIED="1616308163951" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/数据采集/财务分析" />
     <SUITE FILE_PATH="coverage/collect$temp1.coverage" NAME="temp1 Coverage Results" MODIFIED="1608560599627" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/collect$date.coverage" NAME="date Coverage Results" MODIFIED="1608888694275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/函数目录" />
     <SUITE FILE_PATH="coverage/collect$a.coverage" NAME="a Coverage Results" MODIFIED="1584971745228" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -2350,8 +2358,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/数据采集/财务分析/采集标准类.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="27" column="17" lean-forward="true" selection-start-line="27" selection-start-column="17" selection-end-line="27" selection-end-column="17" />
+        <state relative-caret-position="132">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
           <folding>
             <element signature="e#18#29#0" expanded="true" />
           </folding>

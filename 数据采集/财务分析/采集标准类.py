@@ -1,8 +1,6 @@
 # encoding:utf-8
 
 # 还在开发未上线
-
-
 import time
 import requests
 from lxml import etree
@@ -18,12 +16,19 @@ def new_获取_现金流量表():
     # for _ in range(retry_count):
     #     time.sleep(pause)
     try:
+        # 访问网站的标准三步
         url = 'http://money.finance.sina.com.cn/corp/go.php/vFD_FinancialGuideLine/stockid/000001/ctrl/2020/displaytype/4.phtml'
         text = requests.get(url).text
         html = etree.HTML(text)
+        # 定位指定表格
         res = html.xpath("//table[@id='BalanceSheetNewTable0']/tbody/tr")
+        # 将表格数据转换为一个list
         sarr = [etree.tostring(node).decode('utf-8') for node in res]
+        # 在list前后增加table属性
         sarr = '<table>%s</table>' % sarr
+        # 使用pandas的readhtml模块读取表格
+        # 其实也是可以直接使用readhtml模块进行读取表格，但是会有多个表格，
+        # 这个程序只是对表格先期进行了一个筛选。
         df = pd.read_html(sarr)
         print(df)
         return df
@@ -34,4 +39,3 @@ def new_获取_现金流量表():
 if __name__ == '__main__':
 
     new_获取_现金流量表()
-
