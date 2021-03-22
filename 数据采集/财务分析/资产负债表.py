@@ -2,22 +2,25 @@
 
 import time
 
-from urllib.request import urlopen, Request
-import lxml.html
-from lxml import etree
-from pandas.compat import StringIO
+# from urllib.request import urlopen, Request
+# import lxml.html
+# from lxml import etree
+# from pandas.compat import StringIO
 import pandas as pd
 
 from 函数目录 import profile as ct
 
-from 函数目录 import date
-
-from 函数目录.function import save_file_dataframe_to_execl
+# from 函数目录 import date
+#
+# from 函数目录.function import save_file_dataframe_to_execl
 
 from 数据采集.股票清单.股票清单获取 import StockDict
 
-from 函数目录.function import check_file_exist
+# from 函数目录.function import check_file_exist
+from 数据采集.财务分析.采集标准类 import 获取_财务分析表
 
+URL = ct.资产负债表_URL
+TABLE_XPATH = "//table[@id='BalanceSheetNewTable0']/tbody/tr"
 
 def 获取_资产负债表(year, quarter ,stockId):
     """
@@ -55,7 +58,8 @@ def 获取_资产负债表(year, quarter ,stockId):
 
     if ct._check_input(year, quarter ) is True:
         #ct._write_head()
-        df = _获取_资产负债表(year, quarter,stockId, 1, pd.DataFrame())
+        df = 获取_财务分析表(URL, year, quarter, stockId, 1, pd.DataFrame(), TABLE_XPATH)
+        # df = _获取_资产负债表(year, quarter,stockId, 1, pd.DataFrame())
         if df is not None:
             return process_dataframe(df)
         else:
@@ -63,28 +67,28 @@ def 获取_资产负债表(year, quarter ,stockId):
 
 
 
-def _获取_资产负债表(year, quarter, stockId , pageNo, dataArr, retry_count=3, pause=0.001):
-    #ct._write_console()
-    for _ in range(retry_count):
-        time.sleep(pause)
-        try:
-            request = Request(ct.资产负债表_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
-            #print(ct.财务指标_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
-            text = urlopen(request, timeout=10).read()
-            text = text.decode('GBK')
-            text = text.replace('--', '无')
-            #text = text.replace('--','' )
-            html = lxml.html.parse(StringIO(text))
-            res = html.xpath("//table[@id='BalanceSheetNewTable0']/tbody/tr")
-            sarr = [etree.tostring(node).decode('utf-8') for node in res]
-            sarr = ''.join(sarr)
-            sarr = '<table>%s</table>' % sarr
-            df = pd.read_html(sarr)[0]
-            return df
-        except Exception as e:
-            pass
-            #print('获取财务数据出错。')
-    #raise IOError(ct.NETWORK_URL_ERROR_MSG)
+# def _获取_资产负债表(year, quarter, stockId , pageNo, dataArr, retry_count=3, pause=0.001):
+#     #ct._write_console()
+#     for _ in range(retry_count):
+#         time.sleep(pause)
+#         try:
+#             request = Request(ct.资产负债表_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
+#             #print(ct.财务指标_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
+#             text = urlopen(request, timeout=10).read()
+#             text = text.decode('GBK')
+#             text = text.replace('--', '无')
+#             #text = text.replace('--','' )
+#             html = lxml.html.parse(StringIO(text))
+#             res = html.xpath("//table[@id='BalanceSheetNewTable0']/tbody/tr")
+#             sarr = [etree.tostring(node).decode('utf-8') for node in res]
+#             sarr = ''.join(sarr)
+#             sarr = '<table>%s</table>' % sarr
+#             df = pd.read_html(sarr)[0]
+#             return df
+#         except Exception as e:
+#             pass
+#             #print('获取财务数据出错。')
+#     #raise IOError(ct.NETWORK_URL_ERROR_MSG)
 
 
 def 获取_全量股票_资产负债表_某个季度(year,quarter):

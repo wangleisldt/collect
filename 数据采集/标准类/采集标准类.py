@@ -36,5 +36,13 @@ class 采集标准类():
         except:
             return None
 
+    def _获取数据_text(self):
+        try:
+            response = requests.get(self.url,headers=self.headers,params=self.params,proxies=self.proxies,timeout=self.timeout)
+            content = response.text
+            return content
+        except:
+            return None
+
 if __name__ == '__main__':
     pass

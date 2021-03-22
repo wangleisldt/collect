@@ -1,16 +1,19 @@
 # encoding:utf-8
 
 import time
-
-from urllib.request import urlopen, Request
-import lxml.html
+import requests
+# from urllib.request import urlopen, Request
+# import lxml.html
 from lxml import etree
-from pandas.compat import StringIO
+# from pandas.compat import StringIO
 import pandas as pd
 
 from 函数目录 import profile as ct
 from 数据采集.股票清单.股票清单获取 import StockDict
+from 数据采集.财务分析.采集标准类 import 获取_财务分析表
 
+URL = ct.公司利润表_URL
+TABLE_XPATH = "//table[@id='ProfitStatementNewTable0']/tbody/tr"
 
 def 获取_公司利润表(year, quarter ,stockId):
 
@@ -25,8 +28,9 @@ def 获取_公司利润表(year, quarter ,stockId):
         return None
 
     if ct._check_input(year, quarter ) is True:
-        #ct._write_head()
-        df = _获取_公司利润表(year, quarter,stockId, 1, pd.DataFrame())
+        # ct._write_head()
+        df = 获取_财务分析表(URL , year, quarter,stockId, 1, pd.DataFrame(),TABLE_XPATH)
+        # df = _获取_公司利润表(year, quarter,stockId, 1, pd.DataFrame())
         if df is not None:
             return process_dataframe(df)
         else:
@@ -34,23 +38,35 @@ def 获取_公司利润表(year, quarter ,stockId):
 
 
 
-def _获取_公司利润表(year, quarter, stockId , pageNo, dataArr, retry_count=3, pause=0.001):
+def _获取_公司利润表_old(year, quarter, stockId , pageNo, dataArr, retry_count=3, pause=0.001):
     #ct._write_console()
     for _ in range(retry_count):
         time.sleep(pause)
         try:
-            request = Request(ct.公司利润表_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
-            #print(ct.财务指标_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
-            text = urlopen(request, timeout=10).read()
-            text = text.decode('GBK')
+            url = ct.公司利润表_URL % (ct.P_TYPE['http'], stockId, year, 4)
+            text = requests.get(url).text
             text = text.replace('--', '无')
-            #text = text.replace('--','' )
-            html = lxml.html.parse(StringIO(text))
+            html = etree.HTML(text)
             res = html.xpath("//table[@id='ProfitStatementNewTable0']/tbody/tr")
             sarr = [etree.tostring(node).decode('utf-8') for node in res]
             sarr = ''.join(sarr)
             sarr = '<table>%s</table>' % sarr
             df = pd.read_html(sarr)[0]
+
+            # request = Request(ct.公司利润表_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
+            # #print(ct.财务指标_URL % (ct.P_TYPE['http'], stockId , year, 4 ))
+            # text = urlopen(request, timeout=10).read()
+            # text = text.decode('GBK')
+            # text = text.replace('--', '无')
+            # #text = text.replace('--','' )
+            # html = lxml.html.parse(StringIO(text))
+            # res = html.xpath("//table[@id='ProfitStatementNewTable0']/tbody/tr")
+            # sarr = [etree.tostring(node).decode('utf-8') for node in res]
+            # sarr = ''.join(sarr)
+            # sarr = '<table>%s</table>' % sarr
+            # df = pd.read_html(sarr)[0]
+
+            # print(df)
             return df
         except Exception as e:
             pass
@@ -85,6 +101,7 @@ def 获取_全量股票_公司利润表_某个季度(year,quarter):
             df = 获取_公司利润表(year, quarter, element)
             if df is not None:
                 df.to_excel(writer, sheet_name=element)
+                # print(df)
             else:
                 print("%s无相关数据。" % element)
 

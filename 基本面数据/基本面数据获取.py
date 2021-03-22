@@ -70,8 +70,8 @@ def 季度基本面数据获取(year,quarter):
     aa.getProfitAbility()
 
 if __name__ == '__main__':
-    fromYear = 2017
-    toYear = 2017
+    fromYear = 2015
+    toYear = 2019
 
     aa = pr.PerformanceReport()
     aa.getPerformanceReportYearRange(fromYear, toYear)
