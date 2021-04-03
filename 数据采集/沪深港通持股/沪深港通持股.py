@@ -56,7 +56,7 @@ class 沪深港通持股():
 
 
     def 根据全量股票进行获取(self,from_stockid="000000",sleep_stock_num= 500,sleep_sec = 5):
-        writer = pd.ExcelWriter(self.dirname_步骤一 + pf.步骤一 + getCurrentDate() + pf.Execl) #产生保存文件
+        # writer = pd.ExcelWriter(self.dirname_步骤一 + pf.步骤一 + getCurrentDate() + pf.Execl) #产生保存文件
         #初始化全部股票代码
         stockListInstance = StockDict()
         #对每个股票代码进行处理
@@ -76,7 +76,7 @@ class 沪深港通持股():
                     df = self._获取数据(element)
                     time.sleep(1)
                     if df is not None:
-                        df.to_excel(writer, sheet_name=element)
+                        # df.to_excel(writer, sheet_name=element)
                         save_dict[element] = df
                     else:
                         print("%s无相关数据。" % element)
@@ -85,8 +85,9 @@ class 沪深港通持股():
             except:
                 print("获取%s失败################################################"  %element )
 
-        writer.save()
-        writer.close()
+        # writer.save()
+        # writer.close()
+        self._将字典保存成Execl文件(save_dict,self.dirname_步骤一 + pf.步骤一 + getCurrentDate() + pf.Execl)
 
         shutil.copyfile(self.dirname_步骤一 + pf.步骤一 + getCurrentDate() + pf.Execl, self.dirname_步骤一 + pf.步骤一  + pf.Execl)
 
@@ -221,7 +222,7 @@ class 沪深港通持股():
 
 if __name__ == '__main__':
     a = 沪深港通持股()
-    #a.根据全量股票进行获取()
+    a.根据全量股票进行获取()
     #a.步骤一()
     #a.步骤二()
     #a.步骤三()
@@ -234,5 +235,5 @@ if __name__ == '__main__':
     for k,v in df.items():
         print(k)
         #print(v.dtypes)
-        #print(k, "------------", v)
+        # print(k, "------------", v)
 

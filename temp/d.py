@@ -6,6 +6,9 @@ from 函数目录.function import checkAndCreateDir, check_file_exist
 from 数据采集.股票清单.股票清单获取 import StockDict
 from 函数目录.date import getCurrentDate
 
+from 函数目录 import function as fn
+import joblib
+
 class 获取上市公司调研情况_根据股票代码一个一个获取():
     # 初始化
     def __init__(self):
@@ -19,6 +22,8 @@ class 获取上市公司调研情况_根据股票代码一个一个获取():
     def _将字典保存成Execl文件(self,dict,filename):
         with pd.ExcelWriter(filename) as writer:
             for e in sorted(dict.keys()):
+                print(e)
+                # print(dict[e])
                 dict[e].to_excel(writer, sheet_name=e)
 
     def 根据全量股票进行获取(self):
@@ -59,7 +64,8 @@ class 获取上市公司调研情况_根据股票代码一个一个获取():
 
         # writer.save()
         # writer.close()
-
+        fn.save_pkl_obj(save_dict, "/tmp/aaa.pkl")
+        joblib.dump(save_dict, "/tmp/bbb", compress=3, protocol=None)
         self._将字典保存成Execl文件(save_dict, dirname + pf.投资者关系活动记录表 +  getCurrentDate() +pf.Execl)
 
         #下面部分对文件进行合并
@@ -135,21 +141,34 @@ class 获取上市公司调研情况_根据股票代码一个一个获取():
         content = response.content.decode(fencoding['encoding'],errors = 'ignore')[13:]
 
         dict = json.loads(content)
+        
         '''
-
-        list = 处理返回字典将其转换为List(dict)
-
-        if len(list) != 0:
-            df = pd.DataFrame(list, columns=self.columns)
-            #print(df)
-            #for e in list:
-                #print(e)
-            return df
-        else:
+        if dict is None:
             return None
+        else:
+            list = 处理返回字典将其转换为List(dict)
+
+            if len(list) != 0:
+                df = pd.DataFrame(list, columns=self.columns)
+                #print(df)
+                #for e in list:
+                    #print(e)
+                return df
+            else:
+                return None
 
 
 if __name__ == '__main__':
     a = 获取上市公司调研情况_根据股票代码一个一个获取()
     a.根据全量股票进行获取()
+
+
+    # dict = fn.load_pkl_obj("/tmp/aaa.pkl")
+
+    # for k,v in dict.items():
+    #     print(k,v)
+
+    # a._将字典保存成Execl文件(dict, "/tmp/aaaaa" + pf.Execl)
+
+
 

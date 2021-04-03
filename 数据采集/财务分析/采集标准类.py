@@ -38,6 +38,7 @@ from 数据采集.标准类.采集标准类 import 采集标准类
 
 def 获取_财务分析表(url_input ,year, quarter, stockId , pageNo, dataArr, table_xpath , retry_count=3, pause=0.001  ):
     #ct._write_console()
+    time.sleep(1)
     for _ in range(retry_count):
         time.sleep(pause)
         try:
@@ -90,7 +91,26 @@ def 获取_财务分析表(url_input ,year, quarter, stockId , pageNo, dataArr, 
 #             #print('获取财务数据出错。')
 #     #raise IOError(ct.NETWORK_URL_ERROR_MSG)
 
+def 获取某季度财务分析数据(type,year, quarter):
+    print("开始读取之前的数据")
+    dirname = ct.GLOBAL_PATH + ct.SEPARATOR + ct.FUNDAMENTAL_DATA + ct.SEPARATOR + type + ct.SEPARATOR
+    filename = "%s-%s.xlsx" % (year, quarter)
+    print(dirname+filename)
+    try:
+        dict_df = pd.read_excel(dirname+filename, sheet_name=None)
+    except:
+        dict_df = {}
+    return dict_df
+
+
+
 if __name__ == '__main__':
+    dict = 获取某季度财务分析数据(ct.CompanyProfitStatement, 2021, 3)
+    for k in dict.keys():
+        print(k)
+    # for k,v in dict.items():
+    #     print(k,v)
+
     pass
 
     # new_获取_现金流量表()

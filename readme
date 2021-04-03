@@ -1,9 +1,10 @@
-openpyxl         3.0.3
+# openpyxl         3.0.3
 pandas           1.0.3
 SQLAlchemy       1.3.15
 tushare          1.2.54
 xlrd             1.2.0
 joblib           1.0.0
+XlsxWriter         1.3.8
 
 
 虚拟环境的安装：
@@ -12,14 +13,14 @@ python3 -m venv .venv
 
 
 安装包：
-pip3 install openpyxl==3.0.3
+# pip3 install openpyxl==3.0.3
 pip3 install pandas<0.25.0
 pip3 install SQLAlchemy==1.3.15
 pip3 install xlrd==1.2.0
 pip3 install joblib==1.0.0
 pip3 install tushare==1.2.54
 pip3 install pandas==0.22.0
-
+pip3 install XlsxWriter==1.3.8
 
 
 

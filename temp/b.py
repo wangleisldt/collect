@@ -1,98 +1,91 @@
-from sqlalchemy import create_engine
-import sqlalchemy as sa
-from sqlalchemy.types import FLOAT
+# encoding:utf-8
 
+import time
 import pandas as pd
+from 函数目录 import profile as ct
+from 函数目录 import function as fn
+from 数据采集.股票清单.股票清单获取 import StockDict
+from 数据采集.财务分析.采集标准类 import 获取_财务分析表,获取某季度财务分析数据
 
-from 函数目录 import profile as pf
-from 函数目录.function import checkAndCreateDir, check_file_exist
+URL = ct.财务指标_URL
+TABLE_XPATH = "//table[@id='BalanceSheetNewTable0']/tbody/tr"
 
+def 全量获取(year, quarter,dict_has_get_all):
+    # 初始化全部股票代码
+    stockListInstance = StockDict()
+    return_dict = {}
 
-class 沪深港通持股数据入库():
-    # 初始化
-    def __init__(self):
-        self.engine = create_engine('sqlite:///C:\sqlite3\hsgtcg.db')
-        self.columns=['日期', '股票代码', '股票名称' , '持股数量', '持股市值', '持股数量占A股百分比', '当日收盘价', '当日涨跌幅']#采集的列
-
-        self.base_dir_name = "%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA)
-        self.dirname_步骤一 = "%s%s%s%s%s%s" % (
-            self.base_dir_name, pf.SEPARATOR, pf.沪深港通持股, pf.SEPARATOR, pf.步骤一, pf.SEPARATOR)
-
-        checkAndCreateDir(self.dirname_步骤一)
-
-        self.dirname_步骤二 = "%s%s%s%s%s%s" % (
-            self.base_dir_name, pf.SEPARATOR, pf.沪深港通持股, pf.SEPARATOR, pf.步骤二, pf.SEPARATOR)
-        checkAndCreateDir(self.dirname_步骤二)
-
-    def 获取数据(self):
-        engine = create_engine('sqlite:///C:\sqlite3\hsgtcg.db')
-
-        #dict_df_步骤一 = pd.read_excel(self.dirname_步骤一 + '1' + pf.Execl, sheet_name=None,converters={1: str})  # 将股票代码其转换为字符串，这样就比较好处理
-
-        dict_df_步骤二 = pd.read_excel(self.dirname_步骤二 + pf.步骤二 + pf.Execl, sheet_name=None,converters={1: str})  # 将股票代码其转换为字符串，这样就比较好处理
-
-        for k, v in dict_df_步骤二.items():
-            print(k)
-            try:
-                #print(v)
-                #print(v.info())
-                #v.to_sql('table' + k, engine, if_exists='replace', index_label='日期' ,  index=False, chunksize=1000,dtype={"持股数量占A股百分比": FLOAT(), '当日收盘价': FLOAT(), '当日涨跌幅': FLOAT()})
-                v.to_sql('table' + k, engine, if_exists='replace',  index=False , chunksize=10000, dtype={"持股数量占A股百分比": FLOAT(), '当日收盘价': FLOAT(), '当日涨跌幅': FLOAT()})
-
-                #v.to_sql('table' + k, engine, if_exists='replace', chunksize=1000,dtype={"持股数量占A股百分比": FLOAT(),'当日收盘价':FLOAT(),'当日涨跌幅':FLOAT()})
-            except:
-                print("有错")
-
-    def 读取表里的数据(self):
-        engine = create_engine('sqlite:///C:\sqlite3\hsgtcg.db')
-        all_table_name = engine.execute("SELECT name FROM sqlite_master WHERE type ='table' ORDER BY name ").fetchall()
-        print(all_table_name)
-        print(len(all_table_name))
-        for e in all_table_name:
-            table_name = e[0]
-            print(table_name)
-            df1 = pd.read_sql_table(table_name, engine)
-            print(df1)
-            print(df1.info())
-
-            dict_df_步骤一 = pd.read_excel(self.dirname_步骤一 + '2' + pf.Execl, sheet_name=None,converters={1: str})  # 将股票代码其转换为字符串，这样就比较好处理
-            for k,v in dict_df_步骤一.items():
-
-
-                df3 = pd.concat([v, df1]).drop_duplicates(subset=self.columns[0],
-                                                           keep='first', inplace=False).reset_index(drop=True)
-
-            df3.to_sql('table' + k, engine, if_exists='replace', index=False, chunksize=1000,
-                     dtype={"持股数量占A股百分比": FLOAT(), '当日收盘价': FLOAT(), '当日涨跌幅': FLOAT()})
-
-    def _获取表格里最大日期(self,table_name):
+    for element in stockListInstance.stockIdList:
         try:
-            max_date = self.engine.execute("SELECT max(日期) FROM "+ table_name).fetchall()[0][0]
-            return max_date
+
+            print("开始获取%s股票的%s年%s季度的--财务指标--数据。" % (element, year, quarter))
+            #判断是否获取过
+            if element in dict_has_get_all.keys():
+                print("之前已获取过相关数据")
+            else:
+                df = 获取_财务指标(year, quarter, element)
+                if df is not None:
+                    return_dict[element]=df
+                    # print(df)
+                else:
+                    print("%s无相关数据。" % element)
         except:
+            print("获取%s失败################################################" % element)
+
+    #将采集的数据与之前在文件中读取的数据进行合并
+    return_dict.update(dict_has_get_all)
+    return return_dict
+
+def 保存数据(dict,year, quarter):
+    print("开始保存数据")
+    dirname = ct.GLOBAL_PATH + ct.SEPARATOR + ct.FUNDAMENTAL_DATA + ct.SEPARATOR + ct.FinancialIndex + ct.SEPARATOR
+    filename = "%s-%s.xlsx" % (year, quarter)
+    fn.将字典保存成Execl文件(dict, dirname + filename)
+    print("结束保存数据")
+
+
+
+def 获取_财务指标(year, quarter ,stockId):
+
+    def process_dataframe(df):
+        for i in range(0, len(df.columns)):
+            date = str(year) + ct.End_OF_SEASON_DAY[quarter]
+            if date == df[i][0]:
+                return df.loc[:, [0, i]]
+        return None
+
+    if ct._check_input(year, quarter ) is True:
+        df = 获取_财务分析表(URL , year, quarter,stockId, 1, pd.DataFrame(),TABLE_XPATH)
+        if df is not None:
+            return process_dataframe(df)
+        else:
             return None
 
-    def _读取当天采集文件返回当天的一个字典(self):
-        dict_df_步骤一 = pd.read_excel(self.dirname_步骤一 + pf.步骤一 + pf.Execl, sheet_name=None,converters={1: str})  # 将股票代码其转换为字符串，这样就比较好处理
-        return dict_df_步骤一
+def 全流程(year, quarter):
+    dict_has_get_all = 获取某季度财务分析数据(ct.FinancialIndex,year, quarter)
+    dict = 全量获取(year, quarter,dict_has_get_all)
+    保存数据(dict, year, quarter)
 
-    def 将字典的数据与数据库的数据进行合并存盘(self):
-        dict_df = self._读取当天采集文件返回当天的一个字典()
-        for k,v in dict_df.items():
-            table_name = "table" + k
-            max_date = self._获取表格里最大日期(table_name)
-            if max_date is not None:
-                pass
-                #合并数据
+def 获取_全量股票_财务指标_某个季度(year,quarter):
+    全流程(year, quarter)
 
-            else:
-                pass
-                #直接保存数据
 
 
 if __name__ == '__main__':
-    print("start")
-    #a = 沪深港通持股数据入库()
-    #a.获取数据()
-    #a.读取表里的数据()
-    #a.获取表格里最大日期("table000001")
+    #df = 获取_财务指标(2016,2 , 601006)
+
+    #dirname = ct.GLOBAL_PATH + ct.SEPARATOR + ct.FUNDAMENTAL_DATA + ct.SEPARATOR + ct.FinancialIndex + ct.SEPARATOR + "temp"
+    #filename = "601006-2016-2.xlsx"
+    #save_file_dataframe_to_execl(dirname,filename,df)
+
+    #stockId, success_year, success_quarter = 获取_全量_财务指标(601006)
+    #print("%s最后一次正确获得财务数据是：%s年%s季度。" % (stockId, success_year, success_quarter))
+
+
+    ##################################
+    #  一般使用下面的函数
+    ##################################
+    #获取_全量股票_财务指标()
+
+    获取_全量股票_财务指标_某个季度(2020,3)
+

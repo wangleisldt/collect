@@ -1,6 +1,7 @@
 import os
 import pickle
 import pathlib
+import pandas as pd
 
 from 函数目录 import profile as pf
 
@@ -91,3 +92,11 @@ def save_pkl_obj(obj, name):
 def load_pkl_obj(name):
     with open(name, 'rb') as f:
         return pickle.load(f)
+
+#################################################
+#   将字典保存成execl文件，其中key为股票代码，value为相关数据（dataframe结构）
+#################################################
+def 将字典保存成Execl文件(dict,filename):
+    with pd.ExcelWriter(filename) as writer:
+        for e in sorted(dict.keys()):
+            dict[e].to_excel(writer, sheet_name=e)
