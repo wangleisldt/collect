@@ -1,91 +1,119 @@
-# encoding:utf-8
+import pickle
 
-import time
-import pandas as pd
-from 函数目录 import profile as ct
-from 函数目录 import function as fn
-from 数据采集.股票清单.股票清单获取 import StockDict
-from 数据采集.财务分析.采集标准类 import 获取_财务分析表,获取某季度财务分析数据
+from 函数目录 import profile as pf
+import joblib
 
-URL = ct.财务指标_URL
-TABLE_XPATH = "//table[@id='BalanceSheetNewTable0']/tbody/tr"
 
-def 全量获取(year, quarter,dict_has_get_all):
-    # 初始化全部股票代码
-    stockListInstance = StockDict()
-    return_dict = {}
+class StockDict:
+    # 初始化
+    def __init__(self):
+        #self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR, pf.StockListFilename, pf.PklFile)
+        self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR,pf.StockListFilename, pf.GZ)
 
-    for element in stockListInstance.stockIdList:
-        try:
+        self.stockDict = {}
+        self.stockIdList = []
+        self.stock_id_market = []
+        self.stock_id_market_sh_sz = []
+        self.stockIdListWithoutNone = []
+        self.stockIdListWithNone = []
 
-            print("开始获取%s股票的%s年%s季度的--财务指标--数据。" % (element, year, quarter))
-            #判断是否获取过
-            if element in dict_has_get_all.keys():
-                print("之前已获取过相关数据")
+        self.getStockFromFileToDict()
+        self.getStockId()
+        self.get_stockid_market()
+        self.get_stockid_market_sh_sz()
+        self.getStockIdWithoutNone()
+        self.getStockIdWithNone()
+
+    #################################################
+    # 获取股票清单到Dict(类初始化时自动加载)
+    #################################################
+    def getStockFromFileToDict(self):
+        #pklFile = open( self.filename , 'rb')
+        #self.stockDict = pickle.load(pklFile)
+        #pklFile.close()
+        self.stockDict = joblib.load(self.filename, mmap_mode=None)
+
+    #################################################
+    # 从股票字典获取股票代码
+    #################################################
+    def getStockId(self):
+        #for stockId in self.stockDict["timeToMarket"]:
+        for stockId in self.stockDict[pf.股票清单表头[1]]:
+            #print(stockId)
+            self.stockIdList.append(str(stockId))
+        self.stockIdList.sort()
+
+    #################################################
+    # 从股票字典获取股票代码和交易市场
+    #################################################
+    def get_stockid_market_sh_sz(self):
+        # for stockId in self.stockDict["timeToMarket"]:
+        for stockId in self.stockDict[pf.股票清单表头[1]]:
+            # print(stockId)
+            if self.stockDict[pf.股票清单表头[21]][stockId] == 0:
+                market = 'SZ'
             else:
-                df = 获取_财务指标(year, quarter, element)
-                if df is not None:
-                    return_dict[element]=df
-                    # print(df)
-                else:
-                    print("%s无相关数据。" % element)
-        except:
-            print("获取%s失败################################################" % element)
+                market = 'SH'
+            self.stock_id_market_sh_sz.append([stockId,market])
 
-    #将采集的数据与之前在文件中读取的数据进行合并
-    return_dict.update(dict_has_get_all)
-    return return_dict
+    #################################################
+    # 从股票字典获取股票代码和交易市场
+    #################################################
+    def get_stockid_market(self):
+        # for stockId in self.stockDict["timeToMarket"]:
+        for stockId in self.stockDict[pf.股票清单表头[1]]:
+            # print(stockId)
+            self.stock_id_market.append([stockId, self.stockDict[pf.股票清单表头[21]][stockId]])
 
-def 保存数据(dict,year, quarter):
-    print("开始保存数据")
-    dirname = ct.GLOBAL_PATH + ct.SEPARATOR + ct.FUNDAMENTAL_DATA + ct.SEPARATOR + ct.FinancialIndex + ct.SEPARATOR
-    filename = "%s-%s.xlsx" % (year, quarter)
-    fn.将字典保存成Execl文件(dict, dirname + filename)
-    print("结束保存数据")
+    #################################################
+    # 从股票字典获取股票代码除去《总市值》为空的，也就是去除退市和未上市的股票id
+    #################################################
+    def getStockIdWithoutNone(self):
+        # for stockId in self.stockDict["timeToMarket"]:
+        for stockId in self.stockDict[pf.股票清单表头[1]]:
+            # print(stockId)
+            # print(pf.股票清单表头[16])
+            # print(self.stockDict[pf.股票清单表头[16]][stockId])
+            if self.stockDict[pf.股票清单表头[16]][stockId] != '-':
+                self.stockIdListWithoutNone.append(str(stockId))
+        self.stockIdListWithoutNone.sort()
 
-
-
-def 获取_财务指标(year, quarter ,stockId):
-
-    def process_dataframe(df):
-        for i in range(0, len(df.columns)):
-            date = str(year) + ct.End_OF_SEASON_DAY[quarter]
-            if date == df[i][0]:
-                return df.loc[:, [0, i]]
-        return None
-
-    if ct._check_input(year, quarter ) is True:
-        df = 获取_财务分析表(URL , year, quarter,stockId, 1, pd.DataFrame(),TABLE_XPATH)
-        if df is not None:
-            return process_dataframe(df)
-        else:
-            return None
-
-def 全流程(year, quarter):
-    dict_has_get_all = 获取某季度财务分析数据(ct.FinancialIndex,year, quarter)
-    dict = 全量获取(year, quarter,dict_has_get_all)
-    保存数据(dict, year, quarter)
-
-def 获取_全量股票_财务指标_某个季度(year,quarter):
-    全流程(year, quarter)
+    #################################################
+    # 从股票字典获取股票代码获取《总市值》为空的，也就是获取退市和未上市的股票id
+    #################################################
+    def getStockIdWithNone(self):
+        # for stockId in self.stockDict["timeToMarket"]:
+        for stockId in self.stockDict[pf.股票清单表头[1]]:
+            # print(stockId)
+            # print(pf.股票清单表头[16])
+            # print(self.stockDict[pf.股票清单表头[16]][stockId])
+            if self.stockDict[pf.股票清单表头[16]][stockId] == '-':
+                self.stockIdListWithNone.append(str(stockId))
+        self.stockIdListWithNone.sort()
 
 
 
 if __name__ == '__main__':
-    #df = 获取_财务指标(2016,2 , 601006)
+    aa = StockDict()
+    #print(aa.stockDict["timeToMarket"])
+    #print(aa.stockDict)
+    # for stockId in aa.stockDict[pf.股票清单表头[1]]:
+    #     print(stockId, aa.stockDict[pf.股票清单表头[1]][stockId])
+    #for stockId in aa.stockDict["timeToMarket"]:
+        #print(stockId,aa.stockDict["timeToMarket"][stockId])
 
-    #dirname = ct.GLOBAL_PATH + ct.SEPARATOR + ct.FUNDAMENTAL_DATA + ct.SEPARATOR + ct.FinancialIndex + ct.SEPARATOR + "temp"
-    #filename = "601006-2016-2.xlsx"
-    #save_file_dataframe_to_execl(dirname,filename,df)
+    #print(aa.stockDict)
 
-    #stockId, success_year, success_quarter = 获取_全量_财务指标(601006)
-    #print("%s最后一次正确获得财务数据是：%s年%s季度。" % (stockId, success_year, success_quarter))
+    # for element in aa.stockIdList:
+    #     #pass
+    #     print(element)
 
+    # for e in aa.stock_id_market:
+    #     print(e)
+    #
+    # for e in aa.stock_id_market_sh_sz:
+    #     print(e)
 
-    ##################################
-    #  一般使用下面的函数
-    ##################################
-    #获取_全量股票_财务指标()
-
-    获取_全量股票_财务指标_某个季度(2020,3)
-
+    for element in aa.stockIdListWithNone:
+        #pass
+        print(element)

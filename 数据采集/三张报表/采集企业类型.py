@@ -31,13 +31,24 @@ def _保存企业类型(output_dict):
     #df.to_excel(filename_execl)
     joblib.dump(output_dict, filename_gz, compress=3, protocol=None)
 
-def 采集企业类型():
+def 采集企业类型(是否读取原有数据 = True):
+    if 是否读取原有数据:
+        print('开始读取原有数据')
+        企业类型字典 = 读取企业类型()
+
     stockid_market_list = _获取股票清单和交易市场()
     # print(stockid_market_list)
     print("开始获取数据：")
     output_dict = {}
     for element in stockid_market_list:
         stockid, market = element
+
+        if 是否读取原有数据 :
+            if stockid in 企业类型字典.keys():
+                print("原来已经有%s股票的数据，使用原有数据无需再次采集" % (stockid))
+                output_dict[stockid] = 企业类型字典[stockid]
+                continue
+
         print("开始获取%s股票数据" % (stockid))
         instance = 采集标准类(url=_根据参数产生url(market,stockid))
         content = instance._获取数据()
@@ -67,7 +78,7 @@ def 读取企业类型():
     return joblib.load(filename_gz, mmap_mode=None)
 
 if __name__ == '__main__':
-    采集企业类型()
+    # 采集企业类型(是否读取原有数据 = True)
     aa = 读取企业类型()
     for k,v in aa.items():
         print(k,v)

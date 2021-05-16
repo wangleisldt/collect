@@ -3,7 +3,7 @@ from 函数目录.function import file_List_Func
 import pickle
 import pandas as pd
 from 函数目录.date import getYearMonthFromMonthLength
-
+from 函数目录.function import checkAndCreateDir
 
 class 上市公司调研情况月度数据处理():
     # 初始化
@@ -23,35 +23,46 @@ class 上市公司调研情况月度数据处理():
         self.dirname_展现数据 = "%s%s%s%s%s%s" % (
             self.base_dir_name, pf.SEPARATOR, pf.投资者关系活动记录表, pf.SEPARATOR, pf.展现数据, pf.SEPARATOR)
 
+        checkAndCreateDir(self.dirname_原始)
+        checkAndCreateDir(self.dirname_单个汇总)
+        checkAndCreateDir(self.dirname_汇总数据)
+        checkAndCreateDir(self.dirname_展现数据)
+
+    def _将字典保存成Execl文件(self,dict,filename):
+        with pd.ExcelWriter(filename) as writer:
+            for e in sorted(dict.keys()):
+                dict[e].to_excel(writer, sheet_name=e)
+
     def 数据汇总_步骤一(self):
-        writer = pd.ExcelWriter(self.dirname_单个汇总 + pf.投资者关系活动记录表 + pf.单个汇总 + pf.Execl)  # 产生保存文件
+        # writer = pd.ExcelWriter(self.dirname_单个汇总 + pf.投资者关系活动记录表 + pf.单个汇总 + pf.Execl)  # 产生保存文件
 
         dict_df_步骤一 = pd.read_excel(self.dirname_原始 + pf.投资者关系活动记录表 +pf.Execl, sheet_name=None,
-                                    converters={0: str})  # 将其转换为字符串，这样就比较好处理
+                                    converters={0: str,1: str},index_col = 0)  # 将其转换为字符串，这样就比较好处理
+
+        save_dict = {}
+
         for k, v in dict_df_步骤一.items():
             df = v
 
-
-            '''
-            #a = df.str.startwith('2018-07')
-            #a = df[['股票代码']]
+            # a = df.str.startwith('2018-07')
+            # a = df[['股票代码']]
             # a = df.values
-            a = df.iloc[1,5]
-            a = df.loc[1]
-            a = df.loc[1:2,3:5]
-            a = df.iloc[1:2, 3:5]
-            a = df.values
-            #a = df[df[3,1:6] == '2018-06']
-            #a = df.values
-            #print(df)
-            #print(df.dtypes)
-            #print(df)
-            #print(df.groupby([0,1,5]).sum())
-            #print(df.dtypes)
+            # a = df.iloc[1,5]
+            # a = df.loc[1]
+            # a = df.loc[1:2,3:5]
+            # a = df.iloc[1:2, 3:5]
+            # a = df.values
+            # #a = df[df[3,1:6] == '2018-06']
+            # #a = df.values
+            # #print(df)
+            # #print(df.dtypes)
+            # #print(df)
+            # #print(df.groupby([0,1,5]).sum())
+            # #print(df.dtypes)
+            #
+            # #print(df[3].str.slice(0,7))
+            # #print(df[3])
 
-            #print(df[3].str.slice(0,7))
-            #print(df[3])
-            '''
 
             '''
             原始数据类似下面的结构
@@ -110,15 +121,17 @@ class 上市公司调研情况月度数据处理():
             #print(df)
             print("汇总了%s。" % k)
 
-            df.to_excel(writer, sheet_name=k)
+            # df.to_excel(writer, sheet_name=k)
+            save_dict[k] = df
 
-        writer.save()
+        # writer.save()
         # writer.close()
+        self._将字典保存成Execl文件(save_dict, self.dirname_单个汇总 + pf.投资者关系活动记录表 + pf.单个汇总 + pf.Execl)
         print("结束预处理汇总。")
 
     def 数据汇总_步骤二(self, year_month):
         dict_df_步骤二 = pd.read_excel(self.dirname_单个汇总 + pf.投资者关系活动记录表 + pf.单个汇总 + pf.Execl, sheet_name=None,
-                                    converters={0: str})  # 将其转换为字符串，这样就比较好处理
+                                    converters={0: str,1: str},index_col = 0)  # 将其转换为字符串，这样就比较好处理
 
 
 
@@ -134,7 +147,9 @@ class 上市公司调研情况月度数据处理():
             year, month = str(year_month)[0:4], str(year_month)[4:6]
 
             # 选择需要的行，其中第二列的日期类似为“2018-08”
-            df = df.ix[df[2] == year + "-" + month]
+            # df = df.ix[df[2] == year + "-" + month]
+            df = df.loc[df[2] == year + "-" + month]
+            # print(df)
 
             if df.empty is False:
                 # 如果非空则将数据保存到list
@@ -147,6 +162,7 @@ class 上市公司调研情况月度数据处理():
 
         # 将结果保存为execl文件
         filename = self.dirname_汇总数据 + str(year_month) + pf.Execl
+        print(f'开始保存文件：{filename}')
         df = pd.DataFrame(output_list, columns=['股票代码', '股票名称', '调研时间', '调研次数'])
         df.to_excel(filename)
 
@@ -159,7 +175,7 @@ class 上市公司调研情况月度数据处理():
         for i in range(length):
             year_month = getYearMonthFromMonthLength(str(from_year_month), i)
             filename = self.dirname_汇总数据 + str(year_month) + pf.Execl
-            df = pd.read_excel(filename, converters={0: str})  # 将其转换为字符串，这样就比较好处理
+            df = pd.read_excel(filename, converters={0: str,1: str},index_col = 0)  # 将其转换为字符串，这样就比较好处理
             df = df[['股票代码', '股票名称', '调研次数']]
             df.rename(columns={'调研次数': str(year_month)}, inplace=True)
             output_dict[year_month] = df
@@ -197,12 +213,13 @@ class 上市公司调研情况月度数据处理():
 
 if __name__ == '__main__':
     a = 上市公司调研情况月度数据处理()
-    a.数据汇总_步骤一()
+    # a.数据汇总_步骤一()
     # b = [201801,201802,201803,201804,201805,201806,201807,201808,201809,201810,201811]
     # for c in b:
-    a.数据汇总_步骤二()
-    #a.数据汇总_步骤二(201901)
-    #a.数据汇总_步骤二(201902)
+    a.数据汇总_步骤二(202103)
+    # a.数据汇总_步骤二(202102)
+    # a.数据汇总_步骤二(202103)
+    # a.数据汇总_步骤二(202104)
     #a.数据汇总_步骤二(201910)
     #a.数据汇总_步骤二(201812)
-    # a.数据展示(201501,12)
+    # a.数据展示(202101,3)

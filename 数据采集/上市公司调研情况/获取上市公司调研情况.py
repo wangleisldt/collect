@@ -10,7 +10,7 @@ class 获取上市公司调研情况_根据股票代码一个一个获取():
     # 初始化
     def __init__(self):
         self.count = 300 #查询多少个股票后，等待一下
-        self.wait_sec = 5 #等待时间
+        self.wait_sec = 1 #等待时间
 
         self.output_list = []
 
@@ -57,58 +57,73 @@ class 获取上市公司调研情况_根据股票代码一个一个获取():
             except:
                 print("获取%s失败################################################"  %element )
 
-        # writer.save()
-        # writer.close()
-
+        print("保存当天数据")
         self._将字典保存成Execl文件(save_dict, dirname + pf.投资者关系活动记录表 +  getCurrentDate() +pf.Execl)
 
+        if check_file_exist(dirname, pf.投资者关系活动记录表 + pf.Execl):
+            pass
+        else:
+            print("原先无数据，保存一下")
+            self._将字典保存成Execl文件(save_dict, dirname + pf.投资者关系活动记录表 + pf.Execl)
+
+    def 数据合并(self):
         #下面部分对文件进行合并
         base_dir_name = "%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA)
         dirname = "%s%s%s%s%s%s" % (
             base_dir_name, pf.SEPARATOR, pf.投资者关系活动记录表, pf.SEPARATOR, pf.原始数据, pf.SEPARATOR)
 
         dict_df_之前数据 = pd.read_excel(dirname + pf.投资者关系活动记录表 + pf.Execl, sheet_name=None,
-                                    converters={0: str})  # 将其转换为字符串，这样就比较好处理
+                                    converters={0: str,1: str},index_col = 0)  # 将其转换为字符串，这样就比较好处理
 
         dict_df_今天数据 = pd.read_excel(dirname + pf.投资者关系活动记录表 + getCurrentDate() + pf.Execl, sheet_name=None,
-                                     converters={0: str})  # 将其转换为字符串，这样就比较好处理
+                                     converters={0: str,1: str},index_col = 0)  # 将其转换为字符串，这样就比较好处理
 
         for stockid_new, df_new in dict_df_今天数据.items():
+            print(f'开始处理：{stockid_new}')
             if stockid_new in dict_df_之前数据.keys():
+                # print(dict_df_之前数据[stockid_new])
+                # print(df_new)
                 dict_df_之前数据[stockid_new] = pd.concat([dict_df_之前数据[stockid_new], df_new]).drop_duplicates(inplace=False).sort_values(by=['调研时间'],ascending = False).reset_index(drop=True)
+                # df = pd.concat([dict_df_之前数据[stockid_new], df_new]).drop_duplicates(inplace=False)
+                # print(df)
             else:
                 dict_df_之前数据[stockid_new] = df_new
 
         self._将字典保存成Execl文件(dict_df_之前数据, dirname + pf.投资者关系活动记录表  + pf.Execl)
-        # writer = pd.ExcelWriter(dirname + pf.投资者关系活动记录表  + pf.Execl)  # 产生保存文件
-        # for e in sorted(dict_df_之前数据.keys()):
-        #     dict_df_之前数据[e].to_excel(writer, sheet_name=e)
-        # writer.save()
-        # writer.close()
-
-
+        # self._将字典保存成Execl文件(dict_df_之前数据, dirname + pf.投资者关系活动记录表 + "aaa"+pf.Execl)
 
     def 获取数据(self, stockid):
         """
             获取东方财富网投资者活动关系
             :param stockid: string e.g. 000860
-            :param pause:
             :return:
             """
         def _根据参数产生url(stockid):
-            url = 'http://data.eastmoney.com/DataCenter_V3/jgdy/gsjsdy.ashx?pagesize=8888888&page=1&param=&sortRule=-1&sortType=0&code={}&name=%%25E6%%25B6%%25AA%%25E9%%2599%%25B5%%25E6%%25A6%%25A8%%25E8%%258F%%259C&rt=51230292'.format(stockid)
+            url = f"http://datainterface3.eastmoney.com/EM_DataCenter_V3/api/JGDYHZ/GetJGDYMX?tkn=eastmoney&secuCode={stockid}&sortfield=1&sortdirec=1&pageNum=1&pageSize=8888&cfg=jgdyhz&_=1618627712129"
+            # url = 'http://data.eastmoney.com/DataCenter_V3/jgdy/gsjsdy.ashx?pagesize=8888888&page=1&param=&sortRule=-1&sortType=0&code={}&name=%%25E6%%25B6%%25AA%%25E9%%2599%%25B5%%25E6%%25A6%%25A8%%25E8%%258F%%259C&rt=51230292'.format(stockid)
+            # print(url)
             return url
 
         def 处理返回字典将其转换为List(dict):
             returnList = []
-            for element in dict['data']:
+            for element in dict['Data'][0]['Data']:
+                # print(element['Data'])
+                # print(element)
+                element_list = element.split('|')
+                # print(element_list)
                 list = []
-                list.append(element['SCode'])
-                list.append(element['SName'])
-                list.append(element['OrgSum'])
-                list.append(element['StartDate'])
-                list.append(element['NoticeDate'])
-                list.append(element['Description'])
+                list.append(element_list[5])
+                list.append(element_list[6])
+                list.append(element_list[4])
+                list.append(element_list[8])
+                list.append(element_list[7])
+                list.append(element_list[11])
+                # list.append(element['SCode'])
+                # list.append(element['SName'])
+                # list.append(element['OrgSum'])
+                # list.append(element['StartDate'])
+                # list.append(element['NoticeDate'])
+                # list.append(element['Description'])
                 returnList.append(list)
 
             # 对第几列进行排序，现在是第4列
@@ -120,24 +135,13 @@ class 获取上市公司调研情况_根据股票代码一个一个获取():
 
         #url = "http://data.eastmoney.com/DataCenter_V3/jgdy/gsjsdy.ashx?pagesize=50&page=1&js=var%%20eKYgfdmv&param=&sortRule=-1&sortType=0&code=%s&name=%%25E6%%25B6%%25AA%%25E9%%2599%%25B5%%25E6%%25A6%%25A8%%25E8%%258F%%259C&rt=51230292" % (stockid)
         url = _根据参数产生url(stockid)
+        # print(url)
         instance = 采集标准类(url)
         dict = instance._获取数据_json()
-        #print(dict)
-        '''
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
-        }
-
-        response = requests.post(url,headers=headers)
-
-        fencoding = chardet.detect(response.content)
-
-        content = response.content.decode(fencoding['encoding'],errors = 'ignore')[13:]
-
-        dict = json.loads(content)
-        '''
+        # print(dict)
 
         list = 处理返回字典将其转换为List(dict)
+        # print(list)
 
         if len(list) != 0:
             df = pd.DataFrame(list, columns=self.columns)
@@ -151,5 +155,5 @@ class 获取上市公司调研情况_根据股票代码一个一个获取():
 
 if __name__ == '__main__':
     a = 获取上市公司调研情况_根据股票代码一个一个获取()
-    a.根据全量股票进行获取()
-
+    # a.根据全量股票进行获取()
+    a.数据合并()

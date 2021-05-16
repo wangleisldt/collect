@@ -1,9 +1,12 @@
-import pandas as pd
+# encoding:utf-8
+#
+# import pandas as pd
 from 函数目录 import profile as pf
 from 函数目录.date import get_1_quarter_after
 from 数据采集.股票清单.股票清单获取 import StockDict
 from 数据采集.标准类.采集标准类 import 采集标准类
-from 数据采集.三张报表.采集企业类型 import 读取企业类型,采集企业类型
+from 数据采集.三张报表.采集企业类型 import 读取企业类型
+from 数据采集.三张报表.财务指标读取 import 财务指标读取
 import json
 from 函数目录.function import checkAndCreateDir
 import joblib
@@ -28,10 +31,15 @@ http://f10.eastmoney.com/NewFinanceAnalysis/zcfzbAjax?companyType=4&reportDateTy
         '利润表': 'lrb',
     }
 
-def 根据全量股票进行获取(year, quarter,type):
+def 根据全量股票进行获取(year, quarter,report_type_in):
     end_date = _将年季度转换为后一个季度末日期(year, quarter)
-    report_type = 财务指标报表类型[type]
+    report_type = 财务指标报表类型[report_type_in]
     stockid_market_list = _获取股票清单和交易市场()
+
+    try:
+        之前采集的财务指标_dict = 财务指标读取(report_type_in,f'{year}{quarter}')
+    except:
+        之前采集的财务指标_dict = {}
 
     #print(stockid_market_list)
     print("开始获取数据：")
@@ -40,6 +48,14 @@ def 根据全量股票进行获取(year, quarter,type):
         #time.sleep(1)
         stockid, market = element
         print("开始获取%s股票数据" % (stockid))
+
+        # 判断是否之前已经采集过
+        if stockid in 之前采集的财务指标_dict.keys():
+            return_dict[stockid] = 之前采集的财务指标_dict[stockid]
+            print(f'之前已经采集过。')
+            continue
+
+        # 之前未采集过，进行采集
         company_type = 读取企业类型()
         if stockid in company_type.keys():
             instance = 采集标准类(url = _根据参数产生url(stockid,market,report_type,end_date = end_date , company_type_dict = company_type ))
@@ -51,21 +67,38 @@ def 根据全量股票进行获取(year, quarter,type):
                     list = None
             else:
                 list = return_list
+
+            # print(list)
+
             if list is not None:
                 dict = _处理返回值(list,str(year)+pf.End_OF_SEASON_DAY[quarter],report_type)
                 if dict is not None:
                     #print(dict)
-                    #for k,v in dict.items():
-                        #print(k,"------------",v)
+                    for k,v in dict.items():
+                        # print(k,"------------",v)
 
+                        if len(v) >= 1:
+                            try:
+                                if v[-1] == '万':
+                                    dict[k] = round(float(v[:-1])*10000)
+                                elif v[-1] == '亿':
+                                    dict[k] = round(float(v[:-1])*100000000)
+                                    # print(dict[k])
+                            except:
+                                pass
                     return_dict[stockid]=dict
 
-                else:
-                    print("无数据")
-            else:
-                print("无数据")
+                    # print("#######################################")
+                    # for k,v in return_dict[stockid].items():
+                    #     print(k,v)
 
-    _保存财务分析(return_dict, type, str(year)+str(quarter))
+                else:
+                    print("无数据###")
+            else:
+                print("无数据。")
+
+
+    _保存财务分析(return_dict, report_type_in, str(year)+str(quarter))
 
 def _获取股票清单和交易市场():
     stockid_market_list = StockDict().stock_id_market_sh_sz
@@ -128,16 +161,17 @@ def _保存财务分析(input_dict,type,date):
     joblib.dump(input_dict, filename_gz, compress=3, protocol=None)
 
 def 获取全部数据(year,quarter):
-    #根据全量股票进行获取(year, quarter, '主要指标')
+    根据全量股票进行获取(year, quarter, '主要指标')
     根据全量股票进行获取(year,quarter, '资产负债表')
     根据全量股票进行获取(year,quarter, '现金流量表')
     根据全量股票进行获取(year,quarter, '利润表')
 
-if __name__ == '__main__':
-    #采集企业类型()
-    #获取全部数据(2018,1)
 
-    #根据全量股票进行获取(2020,3 , '主要指标')
-    根据全量股票进行获取( 2020,3 , '资产负债表')
-    #根据全量股票进行获取(2020, 3, '现金流量表')
-    #根据全量股票进行获取(2020, 3, '利润表')
+if __name__ == '__main__':
+
+    #获取全部季度数据(2018,1)
+
+    # 根据全量股票进行获取(2020,1 , '主要指标')
+    # 根据全量股票进行获取( 2020,4 , '资产负债表')
+    根据全量股票进行获取(2015, 2, '现金流量表')
+    # 根据全量股票进行获取(2015, 2, '利润表')

@@ -1,80 +1,41 @@
-# encoding:utf-8
+from 数据采集.股票清单.股票清单采集 import getStockList
 
-import time
-import pandas as pd
-from 函数目录 import profile as ct
-from 函数目录 import function as fn
-from 数据采集.股票清单.股票清单获取 import StockDict
-from 数据采集.财务分析.采集标准类 import 获取_财务分析表,获取某季度财务分析数据
+from 数据采集.沪深港通持股.沪深港通持股 import 沪深港通持股
 
-URL = ct.资产负债表_URL
-TABLE_XPATH = "//table[@id='BalanceSheetNewTable0']/tbody/tr"
+from  数据采集.上市公司调研情况.上市公司调研情况_对外接口 import 上市公司调研情况全量获取加数据整理
 
+from 数据采集.沪深港通持股.沪深港通持股对外接口 import 沪深港通持股数据_全流程
 
-def 全量获取(year, quarter,dict_has_get_all):
-    # 初始化全部股票代码
-    stockListInstance = StockDict()
-    return_dict = {}
+from  数据采集.沪深港通持股.沪深港通持股数据入库 import 沪深港通持股数据入库
 
-    for element in stockListInstance.stockIdList:
-        try:
-
-            print("开始获取%s股票的%s年%s季度的--资产负债表--数据。" % (element, year, quarter))
-            #判断是否获取过
-            if element in dict_has_get_all.keys():
-                print("之前已获取过相关数据")
-            else:
-                df = 获取_资产负债表(year, quarter, element)
-                if df is not None:
-                    return_dict[element]=df
-                    # print(df)
-                else:
-                    print("%s无相关数据。" % element)
-        except:
-            print("获取%s失败################################################" % element)
-
-    #将采集的数据与之前在文件中读取的数据进行合并
-    return_dict.update(dict_has_get_all)
-    return return_dict
-
-def 保存数据(dict,year, quarter):
-    print("开始保存数据")
-    dirname = ct.GLOBAL_PATH + ct.SEPARATOR + ct.FUNDAMENTAL_DATA + ct.SEPARATOR + ct.BalanceSheet + ct.SEPARATOR
-    filename = "%s-%s.xlsx" % (year, quarter)
-    fn.将字典保存成Execl文件(dict, dirname + filename)
-    print("结束保存数据")
-
-def 获取_资产负债表(year, quarter ,stockId):
-
-    def process_dataframe(df):
-        for i in range(0, len(df.columns)):
-            date = str(year) + ct.End_OF_SEASON_DAY[quarter]
-            if date == df[i][0]:
-                return df.loc[:, [0, i]]
-        return None
-
-    if ct._check_input(year, quarter ) is True:
-        df = 获取_财务分析表(URL , year, quarter,stockId, 1, pd.DataFrame(),TABLE_XPATH)
-        if df is not None:
-            return process_dataframe(df)
-        else:
-            return None
-
-def 全流程(year, quarter):
-    dict_has_get_all = 获取某季度财务分析数据(ct.BalanceSheet,year, quarter)
-    dict = 全量获取(year, quarter,dict_has_get_all)
-    保存数据(dict, year, quarter)
-
-
-def 获取_全量股票_资产负债表_某个季度(year,quarter):
-    全流程(year, quarter)
+from 数据采集.财务分析.财务分析_对外接口 import 数据采集加整理一个季度的数据,获取财务分析数据
+from 数据采集.财务分析.财务分析_数据采集 import 获取财务分析数据_年
+from 数据采集.机构持股.机构持股采集 import 按年获取数据,根据全量股票进行获取
 
 if __name__ == '__main__':
 
-    ##################################
-    #  一般使用下面的函数
-    ##################################
-    #获取_全量股票_资产负债表()
+    #获取股票清单
+    getStockList()
 
-    获取_全量股票_资产负债表_某个季度(2020,3)
+    #获取沪深港通持股数据
+    # 沪深港通持股数据_全流程()
 
+    # 获取上市公司调研情况数据
+    # 上市公司调研情况全量获取加数据整理()
+
+    #数据入库
+    # a = 沪深港通持股数据入库()
+    # a.将当天数据与数据库的数据进行合并存盘()
+
+    # 获取机构持股数据
+    # 按年获取数据(2020)
+    # 根据全量股票进行获取(2021, 1)
+    # 根据全量股票进行获取(2020, 4)
+
+    # 获取季度财务数据
+    数据采集加整理一个季度的数据(2020, 4)
+    数据采集加整理一个季度的数据(2021, 1)
+    # 获取财务分析数据(2018, 4)
+    # 获取财务分析数据_年(2019)
+    # 获取财务分析数据_年(2018)
+    # 获取财务分析数据_年(2015)

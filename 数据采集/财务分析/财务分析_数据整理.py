@@ -67,22 +67,29 @@ def 处理一个文件(filename):
         raise Exception("文件 %s 有问题。请将其删除重新采集。" % (fullfilename))
     '''
 
-    dict_df = pd.read_excel(filename, sheet_name=None)
+    # dict_df = pd.read_excel(filename, sheet_name=None)
+    dict_df = pd.read_excel(filename, sheet_name=None,index_col = 0)
     output_df = pd.DataFrame()  # 生成要输出的dataframe
     for stock_id, df in dict_df.items():
-        df1 = pd.DataFrame({'类型': ['股票代码'], '值': [stock_id]})  # 增加股票代码
-        df.columns = ['类型', '值']  # 将dataframe的列改名
-        df.iloc[0, 0] = '报告日期'  # 修改一些值，如报告日期
-        # df.iloc[0, 1] = df.iloc[0, 1][0:7]#修改一些值，将原来2018-03-31修改为2018-03，代表一季度
-        # print(df)
-        df = pd.concat([df1, df])  # 将股票代码和读取的dataframe进行合并
+        if df.empty :
+            pass
+        else:
+            df1 = pd.DataFrame({'类型': ['股票代码'], '值': [stock_id]})  # 增加股票代码
+            # print(stock_id)
+            # print(df)
+            df.columns = ['类型', '值']  # 将dataframe的列改名
+            df.iloc[0, 0] = '报告日期'  # 修改一些值，如报告日期
+            # df.iloc[0, 1] = df.iloc[0, 1][0:7]#修改一些值，将原来2018-03-31修改为2018-03，代表一季度
+            # print(df)
+            df = pd.concat([df1, df])  # 将股票代码和读取的dataframe进行合并
 
-        df.drop_duplicates('类型', keep='first', inplace=True)  # 根据类型对重复的行进行删除
+            df.drop_duplicates('类型', keep='first', inplace=True)  # 根据类型对重复的行进行删除
 
-        df = df.set_index(['类型'])  # 将股票的指标类型设在为索引
-        # print(df)
+            df = df.set_index(['类型'])  # 将股票的指标类型设在为索引
+            # print(df)
 
-        output_df = pd.concat([output_df, df.T])  # 由于这是每个文件记录是竖排的，所以需要将其倒置，并进行合并
+            output_df = pd.concat([output_df, df.T])  # 由于这是每个文件记录是竖排的，所以需要将其倒置，并进行合并
+
 
     # 将股票代码和日期放到第一列
     # get a list of columns
@@ -91,11 +98,13 @@ def 处理一个文件(filename):
     cols.insert(0, cols.pop(cols.index('股票代码')))
     cols.insert(1, cols.pop(cols.index('报告日期')))
     # use ix to reorder
-    output_df = output_df.ix[:, cols]
+    # print(output_df)
+    # output_df = output_df.ix[:, cols]
+    output_df = output_df.loc[:, cols]
 
     output_df = output_df.reset_index(drop=True)  # 由于倒置的时候，将索引都设置为了‘值’，所以需要对索引进行重置排序
 
     return output_df
 
 if __name__ == '__main__':
-    处理某个季度('2020', '3')
+    处理某个季度('2020', '4')

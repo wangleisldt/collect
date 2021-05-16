@@ -29,7 +29,9 @@ def 保存交易数据(stockid,df):
         print("成功保存文件：%s" % (full_file_name))
 
 if __name__ == '__main__':
-    full_file_name = '%s%s%s%s' % (dirname,pf.SEPARATOR,'000001', pf.GZ)
+    full_file_name = '%s%s%s%s' % (dirname,pf.SEPARATOR,'600000', pf.GZ)
     df = joblib.load(full_file_name, mmap_mode=None)
+    pd.set_option('display.width', 1000)
+    pd.set_option('max_colwidth', 10)
     print(df)
     print(df.dtypes)

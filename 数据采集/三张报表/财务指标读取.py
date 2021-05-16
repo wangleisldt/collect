@@ -13,10 +13,12 @@ def 财务指标读取(type,date):
     dir = base_dir_name + pf.财务分析 + pf.SEPARATOR
     filename_gz = "%s%s%s%s" % (dir, type,date , pf.GZ)
 
+    print(f'开始读取 {filename_gz}')
+
     return joblib.load(filename_gz, mmap_mode=None)
 
 if __name__ == '__main__':
-    aa = 财务指标读取('主要指标',20203)
+    aa = 财务指标读取('主要指标',20201)
     #aa = 财务指标读取('资产负债表', 20203)
     #aa = 财务指标读取('现金流量表', 20203)
     #aa = 财务指标读取('利润表', 20203)

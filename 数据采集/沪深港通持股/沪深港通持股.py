@@ -74,7 +74,7 @@ class 沪深港通持股():
                 if element >= from_stockid:
                     print("开始获取%s" %element)
                     df = self._获取数据(element)
-                    time.sleep(1)
+                    # time.sleep(1)
                     if df is not None:
                         # df.to_excel(writer, sheet_name=element)
                         save_dict[element] = df

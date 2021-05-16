@@ -57,6 +57,7 @@ def 全量获取(year, quarter,dict_has_get_all):
 def 保存数据(dict,year, quarter):
     print("开始保存数据")
     dirname = ct.GLOBAL_PATH + ct.SEPARATOR + ct.FUNDAMENTAL_DATA + ct.SEPARATOR + ct.CompanyProfitStatement + ct.SEPARATOR
+    fn.checkAndCreateDir(dirname)
     filename = "%s-%s.xlsx" % (year, quarter)
     fn.将字典保存成Execl文件(dict, dirname + filename)
     print("结束保存数据")

@@ -97,7 +97,7 @@ def 获取某季度财务分析数据(type,year, quarter):
     filename = "%s-%s.xlsx" % (year, quarter)
     print(dirname+filename)
     try:
-        dict_df = pd.read_excel(dirname+filename, sheet_name=None)
+        dict_df = pd.read_excel(dirname+filename, sheet_name=None,index_col = 0)
     except:
         dict_df = {}
     return dict_df

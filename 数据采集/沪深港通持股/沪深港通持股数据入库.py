@@ -28,7 +28,7 @@ class 沪深港通持股数据入库():
 
         for e in file_list:
             print("开始处理：", path + pf.SEPARATOR + e)
-            dict_df = pd.read_excel( path + pf.SEPARATOR +e , sheet_name=None,converters={1: str})
+            dict_df = pd.read_excel( path + pf.SEPARATOR +e , sheet_name=None,converters={0: str,1: str},index_col = 0)
             self._将字典的数据与数据库的数据进行合并存盘(dict_df)
 
     def 将当天数据与数据库的数据进行合并存盘(self):
@@ -62,7 +62,7 @@ class 沪深港通持股数据入库():
             return None
 
     def _读取当天采集文件返回当天的一个字典(self):
-        dict_df_步骤一 = pd.read_excel(self.dirname_步骤一 + pf.步骤一 + pf.Execl, sheet_name=None,converters={1: str})  # 将股票代码其转换为字符串，这样就比较好处理
+        dict_df_步骤一 = pd.read_excel(self.dirname_步骤一 + pf.步骤一 + pf.Execl, sheet_name=None,converters={0: str,1: str},index_col = 0)  # 将股票代码其转换为字符串，这样就比较好处理
         return dict_df_步骤一
 
     def _将字典的数据与数据库的数据进行合并存盘(self,dict_df):
