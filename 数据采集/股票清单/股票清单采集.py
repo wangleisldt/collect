@@ -1,9 +1,9 @@
-import pickle
 from 函数目录 import profile as pf, date
-from 函数目录.function import checkAndCreateDir
+# from 函数目录.function import checkAndCreateDir
 import pandas as pd
 from 数据采集.标准类.采集标准类 import 采集标准类
 import joblib
+from pathlib import Path
 
 '''
 
@@ -69,7 +69,10 @@ def _根据参数产生url(page_size=90000000):
 def getStockList():
     try:
         print("开始获取股票列表")
-        StockListDir = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR
+        # StockListDir = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR
+        p = Path(pf.GLOBAL_PATH,pf.FUNDAMENTAL_DATA,pf.StockList)
+        p.mkdir(exist_ok=True, parents=True)
+
         #获取数据
         instance = 采集标准类(url=_根据参数产生url())
         content = instance._获取数据_json()
@@ -84,11 +87,11 @@ def getStockList():
         print("结束获取股票列表")
         print("开始保存股票列表")
 
-        checkAndCreateDir(StockListDir)
+        # checkAndCreateDir(StockListDir)
 
         # 保存成execl文件
-        filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.Execl)
-        filenameDate = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.Execl)
+        filename = Path(p , pf.StockListFilename+ date.getCurrentDate()+ pf.Execl )
+        filenameDate = Path(p, pf.StockListFilename + pf.Execl)
         data.to_excel(filename,index=False)
         data.to_excel(filenameDate,index=False)
 
@@ -104,9 +107,11 @@ def getStockList():
         output.close()
         '''
 
-        filename = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.GZ)
+        # filename = '%s%s%s' % (StockListDir, pf.StockListFilename, pf.GZ)
+        filename = Path(p, pf.StockListFilename+ pf.GZ)
         joblib.dump(stockDict, filename, compress=3 , protocol=None)
-        filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.GZ)
+        filename = Path(p, pf.StockListFilename+ date.getCurrentDate()+ pf.GZ)
+        # filename = '%s%s%s%s' % (StockListDir, pf.StockListFilename, date.getCurrentDate(), pf.GZ)
         joblib.dump(stockDict, filename, compress=3, protocol=None)
 
         print("结束保存股票列表")
@@ -117,14 +122,14 @@ def getStockList():
 if __name__ == '__main__':
     getStockList()
 
-'''
-filename = '/home/wangleisldt/collect_data/基本面数据/股票列表/stocklist.gz'
-    obj = joblib.load(filename, mmap_mode=None)
 
-    print(type(obj))
+# filename = '/home/wangleisldt/collect_data/基本面数据/股票列表/stocklist.gz'
+#     obj = joblib.load(filename, mmap_mode=None)
+#
+#     print(type(obj))
+#
+#     for k,v in obj.items():
+#         print(k,'-------',v)
 
-    for k,v in obj.items():
-        print(k,'-------',v)
 
-'''
 

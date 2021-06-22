@@ -15,9 +15,9 @@ import joblib
 class 沪深港通持股():
     # 初始化
     def __init__(self):
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
-        }#采集客户的的一些信息
+        # self.headers = {
+        #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
+        # }#采集客户的的一些信息
         self.url = "http://dcfm.eastmoney.com//em_mutisvcexpandinterface/api/js/get?"#url链接
         self.columns=['日期', '股票代码', '股票名称' , '持股数量', '持股市值', '持股数量占A股百分比', '当日收盘价', '当日涨跌幅']#采集的列
 

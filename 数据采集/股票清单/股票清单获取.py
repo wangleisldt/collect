@@ -1,14 +1,16 @@
-import pickle
+# import pickle
 
 from 函数目录 import profile as pf
 import joblib
+from pathlib import Path
 
 
 class StockDict:
     # 初始化
     def __init__(self):
         #self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR, pf.StockListFilename, pf.PklFile)
-        self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR,pf.StockListFilename, pf.GZ)
+        # self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR,pf.StockListFilename, pf.GZ)
+        self.filename = Path(pf.GLOBAL_PATH, pf.FUNDAMENTAL_DATA, pf.StockList,pf.StockListFilename + pf.GZ)
 
         self.stockDict = {}
         self.stockIdList = []
@@ -95,26 +97,20 @@ class StockDict:
 
 if __name__ == '__main__':
     aa = StockDict()
-    #print(aa.stockDict["timeToMarket"])
-    #print(aa.stockDict)
-    # for stockId in aa.stockDict[pf.股票清单表头[1]]:
-    #     print(stockId, aa.stockDict[pf.股票清单表头[1]][stockId])
-    #for stockId in aa.stockDict["timeToMarket"]:
-        #print(stockId,aa.stockDict["timeToMarket"][stockId])
-
-    #print(aa.stockDict)
+    # print(aa.stockDict)
+    for stockId in aa.stockDict[pf.股票清单表头[1]]:
+        print(stockId, aa.stockDict[pf.股票清单表头[1]][stockId])
 
     # for element in aa.stockIdList:
-    #     #pass
     #     print(element)
-
+    #
     # for e in aa.stock_id_market:
     #     print(e)
     #
     # for e in aa.stock_id_market_sh_sz:
     #     print(e)
-
-    print('退市和未上市股票清单')
-    for element in aa.stockIdListWithNone:
-        #pass
-        print(element)
+    #
+    # print('退市和未上市股票清单')
+    # for element in aa.stockIdListWithNone:
+    #     #pass
+    #     print(element)

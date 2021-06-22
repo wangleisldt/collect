@@ -8,21 +8,22 @@ from 数据采集.标准类.采集标准类 import 采集标准类
 from 数据采集.三张报表.采集企业类型 import 读取企业类型
 from 数据采集.三张报表.财务指标读取 import 财务指标读取
 import json
-from 函数目录.function import checkAndCreateDir
+# from 函数目录.function import checkAndCreateDir
 import joblib
-import time
+# import time
+from pathlib import Path
 
-'''
-总表
-http://f10.eastmoney.com/NewFinanceAnalysis/MainTargetAjax?type=0&code=SZ002507
-利润表
-http://f10.eastmoney.com/NewFinanceAnalysis/lrbAjax?companyType=4&reportDateType=0&reportType=1&endDate=&code=SZ002507
-现金流量表
-http://f10.eastmoney.com/NewFinanceAnalysis/xjllbAjax?companyType=4&reportDateType=0&reportType=1&endDate=&code=SZ002507
-资产负债表
-http://f10.eastmoney.com/NewFinanceAnalysis/zcfzbAjax?companyType=4&reportDateType=0&reportType=1&endDate=&code=SZ002507
-http://f10.eastmoney.com/NewFinanceAnalysis/zcfzbAjax?companyType=4&reportDateType=0&reportType=1&endDate=2018-06-30&code=SZ002507
-'''
+
+# 总表
+# http://f10.eastmoney.com/NewFinanceAnalysis/MainTargetAjax?type=0&code=SZ002507
+# 利润表
+# http://f10.eastmoney.com/NewFinanceAnalysis/lrbAjax?companyType=4&reportDateType=0&reportType=1&endDate=&code=SZ002507
+# 现金流量表
+# http://f10.eastmoney.com/NewFinanceAnalysis/xjllbAjax?companyType=4&reportDateType=0&reportType=1&endDate=&code=SZ002507
+# 资产负债表
+# http://f10.eastmoney.com/NewFinanceAnalysis/zcfzbAjax?companyType=4&reportDateType=0&reportType=1&endDate=&code=SZ002507
+# http://f10.eastmoney.com/NewFinanceAnalysis/zcfzbAjax?companyType=4&reportDateType=0&reportType=1&endDate=2018-06-30&code=SZ002507
+
 
 财务指标报表类型 = {
         '主要指标': 'MainTarget',
@@ -153,10 +154,13 @@ def _将年季度转换为后一个季度末日期(year ,quarter):
     return str(year)+quarter
 
 def _保存财务分析(input_dict,type,date):
-    base_dir_name = "%s%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA, pf.SEPARATOR)
-    dir = base_dir_name + pf.财务分析 + pf.SEPARATOR
-    checkAndCreateDir(dir)
-    filename_gz = "%s%s%s%s" % (dir, type,date, pf.GZ)
+    p = Path(pf.GLOBAL_PATH, pf.FUNDAMENTAL_DATA, pf.财务分析)
+    p.mkdir(exist_ok=True, parents=True)
+    # base_dir_name = "%s%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA, pf.SEPARATOR)
+    # dir = base_dir_name + pf.财务分析 + pf.SEPARATOR
+    # checkAndCreateDir(dir)
+    filename_gz = Path(p  , f'{type}{date}{pf.GZ}')
+    # filename_gz = "%s%s%s%s" % (dir, type,date, pf.GZ)
 
     joblib.dump(input_dict, filename_gz, compress=3, protocol=None)
 
@@ -171,7 +175,7 @@ if __name__ == '__main__':
 
     #获取全部季度数据(2018,1)
 
-    # 根据全量股票进行获取(2020,1 , '主要指标')
+    根据全量股票进行获取(2020,1 , '主要指标')
     # 根据全量股票进行获取( 2020,4 , '资产负债表')
-    根据全量股票进行获取(2015, 2, '现金流量表')
+    # 根据全量股票进行获取(2015, 2, '现金流量表')
     # 根据全量股票进行获取(2015, 2, '利润表')

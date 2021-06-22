@@ -2,8 +2,9 @@ from 函数目录 import profile as pf
 from 函数目录.function import checkAndCreateDir
 from 数据采集.股票清单.股票清单获取 import StockDict
 import joblib
-import pandas as pd
+# import pandas as pd
 from 数据采集.标准类.采集标准类 import 采集标准类
+from pathlib import Path
 
 def _根据参数产生url(market,stockid):
     if market == 0:
@@ -19,11 +20,16 @@ def _获取股票清单和交易市场():
     return stockid_market_list
 
 def _保存企业类型(output_dict):
-    base_dir_name = "%s%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA, pf.SEPARATOR)
-    dir = base_dir_name + pf.财务分析 + pf.SEPARATOR
-    checkAndCreateDir(dir)
-    #filename_execl = "%s%s%s" % (base_dir_name, pf.企业类型 , pf.Execl)
-    filename_gz = "%s%s%s" % (dir, pf.企业类型, pf.GZ)
+    p = Path(pf.GLOBAL_PATH, pf.FUNDAMENTAL_DATA, pf.财务分析)
+    p.mkdir(exist_ok=True, parents=True)
+    filename_gz = Path(p, f'{pf.企业类型}{pf.GZ}')
+
+
+    # base_dir_name = "%s%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA, pf.SEPARATOR)
+    # dir = base_dir_name + pf.财务分析 + pf.SEPARATOR
+    # checkAndCreateDir(dir)
+    # #filename_execl = "%s%s%s" % (base_dir_name, pf.企业类型 , pf.Execl)
+    # filename_gz = "%s%s%s" % (dir, pf.企业类型, pf.GZ)
 
     #print(output_dict)
     #df = pd.DataFrame(output_dict)
@@ -71,9 +77,12 @@ def _处理返回值(content):
         return None
 
 def 读取企业类型():
-    base_dir_name = "%s%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA, pf.SEPARATOR)
-    dir = base_dir_name + pf.财务分析 + pf.SEPARATOR
-    filename_gz = "%s%s%s" % (dir, pf.企业类型, pf.GZ)
+    p = Path(pf.GLOBAL_PATH, pf.FUNDAMENTAL_DATA, pf.财务分析)
+    filename_gz = Path(p, f'{pf.企业类型}{pf.GZ}')
+
+    # base_dir_name = "%s%s%s%s" % (pf.GLOBAL_PATH, pf.SEPARATOR, pf.FUNDAMENTAL_DATA, pf.SEPARATOR)
+    # dir = base_dir_name + pf.财务分析 + pf.SEPARATOR
+    # filename_gz = "%s%s%s" % (dir, pf.企业类型, pf.GZ)
 
     return joblib.load(filename_gz, mmap_mode=None)
 
