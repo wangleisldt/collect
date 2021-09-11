@@ -1,41 +1,39 @@
-from 数据采集.股票清单.股票清单采集 import getStockList
+import pandas as pd
+import sys
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+print('System: {}'.format(sys.version))
+for module in [pd, matplotlib,np]:
+    print('Module {:10s} - version {}'.format(module.__name__, module.__version__))
+df = pd.DataFrame({"Fecha inicio": ['2016-01-31', '2016-01-31', '2016-01-31', '2016-01-31', '2016-12-31', '2016-12-31',
+                                    '2016-12-31', '2016-12-31', ],
+                  "Delito": ["ABANDONO DE PERSONA","ABORTO","ABUSO DE AUTORIDAD","ABUSO DE CONFIANZA","VIOLACION",
+                             "VIOLACION EQUIPARADA","VIOLACION TUMULTUARIA","VIOLENCIA FAMILIAR", ],
+                  "No delitos": [19, 8, 112, 241, 40, 4, 1, 1397, ]
+                   })
+print(df)
+df['date2'] = pd.to_datetime(df['Fecha inicio'], infer_datetime_format=True)
+df['YearMonth'] = df['date2'].map(lambda x: '{}-{}'.format(x.year, x.month))
+print('1---')
+print(df)
+print('2---')
+print(df.groupby(['YearMonth', 'Delito'])['No delitos'].sum())
+print('3---')
+# pb 1
+print(df.groupby(['YearMonth', 'Delito'])['No delitos'].sum().reset_index())
 
-from 数据采集.沪深港通持股.沪深港通持股 import 沪深港通持股
+# pb 2
+print('4---')
+df = df.groupby(['YearMonth', 'Delito'])['No delitos'].sum()
+print(df)
 
-from  数据采集.上市公司调研情况.上市公司调研情况_对外接口 import 上市公司调研情况全量获取加数据整理
+print('5---')
+df = df.groupby('YearMonth').nlargest(3).reset_index(level=0,drop=True).reset_index()
+print(df)
 
-from 数据采集.沪深港通持股.沪深港通持股对外接口 import 沪深港通持股数据_全流程
+print('6--- Plotting df')
+sns.barplot(data=df, x='YearMonth', y='No delitos', hue='Delito')
 
-from  数据采集.沪深港通持股.沪深港通持股数据入库 import 沪深港通持股数据入库
-
-from 数据采集.财务分析.财务分析_对外接口 import 数据采集加整理一个季度的数据,获取财务分析数据
-from 数据采集.财务分析.财务分析_数据采集 import 获取财务分析数据_年
-from 数据采集.机构持股.机构持股采集 import 按年获取数据,根据全量股票进行获取
-
-if __name__ == '__main__':
-
-    #获取股票清单
-    getStockList()
-
-    #获取沪深港通持股数据
-    # 沪深港通持股数据_全流程()
-
-    # 获取上市公司调研情况数据
-    # 上市公司调研情况全量获取加数据整理()
-
-    #数据入库
-    # a = 沪深港通持股数据入库()
-    # a.将当天数据与数据库的数据进行合并存盘()
-
-    # 获取机构持股数据
-    # 按年获取数据(2020)
-    # 根据全量股票进行获取(2021, 1)
-    # 根据全量股票进行获取(2020, 4)
-
-    # 获取季度财务数据
-    数据采集加整理一个季度的数据(2020, 4)
-    数据采集加整理一个季度的数据(2021, 1)
-    # 获取财务分析数据(2018, 4)
-    # 获取财务分析数据_年(2019)
-    # 获取财务分析数据_年(2018)
-    # 获取财务分析数据_年(2015)
+plt.show()

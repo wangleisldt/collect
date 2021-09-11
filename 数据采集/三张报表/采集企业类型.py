@@ -12,7 +12,7 @@ def _根据参数产生url(market,stockid):
     else:
         market = 'SH'
     url = 'http://f10.eastmoney.com/f10_v2/FinanceAnalysis.aspx?code={}{}'.format(market,stockid)
-    #print(url)
+    # print(url)
     return url
 
 def _获取股票清单和交易市场():
@@ -61,19 +61,23 @@ def 采集企业类型(是否读取原有数据 = True):
         #print(content)
         #print(type(content))
         stock_type = _处理返回值(content)
-        output_dict[stockid] = stock_type
+        if stock_type is not None:
+            output_dict[stockid] = stock_type
 
     _保存企业类型(output_dict)
 
 def _处理返回值(content):
-    string_1 ='<input id="hidctype" type="hidden" value="'
-    if content is not None:
-        string_2 = content.split(string_1)
-        #print(string_2[1])
-        if len(string_2)  == 2:
-            print("企业类型（财务报表使用）为： ",string_2[1][0])
-        return string_2[1][0]
-    else:
+    try:
+        string_1 ='<input id="hidctype" type="hidden" value="'
+        if content is not None:
+            string_2 = content.split(string_1)
+            #print(string_2[1])
+            if len(string_2)  == 2:
+                print("企业类型（财务报表使用）为： ",string_2[1][0])
+            return string_2[1][0]
+        else:
+            return None
+    except:
         return None
 
 def 读取企业类型():
@@ -87,7 +91,7 @@ def 读取企业类型():
     return joblib.load(filename_gz, mmap_mode=None)
 
 if __name__ == '__main__':
-    # 采集企业类型(是否读取原有数据 = True)
+    采集企业类型(是否读取原有数据 = False)
     aa = 读取企业类型()
     for k,v in aa.items():
         print(k,v)

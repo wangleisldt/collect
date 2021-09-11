@@ -91,9 +91,9 @@ def getStockList():
 
         # 保存成execl文件
         filename = Path(p , pf.StockListFilename+ date.getCurrentDate()+ pf.Execl )
-        filenameDate = Path(p, pf.StockListFilename + pf.Execl)
+        # filenameDate = Path(p, pf.StockListFilename + pf.Execl)
         data.to_excel(filename,index=False)
-        data.to_excel(filenameDate,index=False)
+        # data.to_excel(filenameDate,index=False)
 
         # 保存成pkl文件
         '''

@@ -14,11 +14,9 @@ def 保存交易数据(stockid,df):
     df[[  '开盘', '收盘', '最高', '最低',  '成交额','振幅', '涨跌幅', '涨跌额', '换手率']] = df[[   '开盘', '收盘', '最高', '最低',  '成交额','振幅', '涨跌幅', '涨跌额', '换手率']].astype(float)
     df[['成交量']] = df[['成交量']].astype(int)
 
-    # full_file_name = '%s%s%s%s' % (dirname, pf.SEPARATOR, stockid, pf.GZ)
-    dirname.mkdir(exist_ok=True, parents=True)
+    full_file_name = '%s%s%s%s' % (dirname, pf.SEPARATOR, stockid, pf.GZ)
     full_file_name = Path(dirname  , f'{stockid}{pf.GZ}')
-    # if check_file_exist(dirname, stockid+ pf.GZ):
-    if full_file_name.exists():
+    if check_file_exist(dirname, stockid+ pf.GZ):
         print("存在文件，进行合并去重。")
         #读取目录中的文件删除最后一行，与新df做合并去重排序等
         df_file = joblib.load(full_file_name, mmap_mode=None)
@@ -35,9 +33,9 @@ def 保存交易数据(stockid,df):
         print("成功保存文件：%s" % (full_file_name))
 
 if __name__ == '__main__':
-    full_file_name = '%s%s%s%s' % (dirname,pf.SEPARATOR,'000014', pf.GZ)
+    full_file_name = '%s%s%s%s' % (dirname,pf.SEPARATOR,'600000', pf.GZ)
     df = joblib.load(full_file_name, mmap_mode=None)
     pd.set_option('display.width', 1000)
-    pd.set_option('max_colwidth', 20)
+    pd.set_option('max_colwidth', 10)
     print(df)
     print(df.dtypes)

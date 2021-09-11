@@ -1,119 +1,77 @@
-import pickle
-
+import pandas as pd
 from 函数目录 import profile as pf
+from 函数目录.function import  check_file_exist
+from 函数目录.date import getCurrentDate
 import joblib
+from 数据采集.沪深港通持股.沪深港通持股 import 沪深港通持股
 
+def 处理整个文件():
+    沪深港通持股_instance = 沪深港通持股()
+    dict_df_步骤二 = joblib.load(沪深港通持股_instance.dirname_步骤二 + pf.步骤二 + pf.GZ, mmap_mode=None)
 
-class StockDict:
-    # 初始化
-    def __init__(self):
-        #self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR, pf.StockListFilename, pf.PklFile)
-        self.filename = '%s%s%s' % (pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.StockList + pf.SEPARATOR,pf.StockListFilename, pf.GZ)
+    return_df = None
+    for k,v in dict_df_步骤二.items():
+        print("开始处理：%s" % (k))
+        df = v
+        # print(df)
+        df = 处理单个dataframe(df)
+        if df is None:
+            continue
+        elif return_df is None:
+            df = df.reset_index()
+            return_df = df
+        else:
+            df = df.reset_index()
+            return_df = pd.concat([return_df,df])
+        # print(return_df)
+        # print(df)
+        # joblib.dump(df, 沪深港通持股_instance.dirname_步骤二 + "aaa" + pf.GZ, compress=3, protocol=None)
+        # exit()
+    return_df = return_df.set_index(keys=['股票代码', '股票名称'])
+    return return_df
 
-        self.stockDict = {}
-        self.stockIdList = []
-        self.stock_id_market = []
-        self.stock_id_market_sh_sz = []
-        self.stockIdListWithoutNone = []
-        self.stockIdListWithNone = []
+def 保存dataframe(df):
+    沪深港通持股_instance = 沪深港通持股()
+    df.to_excel(沪深港通持股_instance.base_dir_name + pf.SEPARATOR + pf.沪深港通持股 + pf.SEPARATOR + "当年情况文件" +  pf.Execl)
 
-        self.getStockFromFileToDict()
-        self.getStockId()
-        self.get_stockid_market()
-        self.get_stockid_market_sh_sz()
-        self.getStockIdWithoutNone()
-        self.getStockIdWithNone()
-
-    #################################################
-    # 获取股票清单到Dict(类初始化时自动加载)
-    #################################################
-    def getStockFromFileToDict(self):
-        #pklFile = open( self.filename , 'rb')
-        #self.stockDict = pickle.load(pklFile)
-        #pklFile.close()
-        self.stockDict = joblib.load(self.filename, mmap_mode=None)
-
-    #################################################
-    # 从股票字典获取股票代码
-    #################################################
-    def getStockId(self):
-        #for stockId in self.stockDict["timeToMarket"]:
-        for stockId in self.stockDict[pf.股票清单表头[1]]:
-            #print(stockId)
-            self.stockIdList.append(str(stockId))
-        self.stockIdList.sort()
-
-    #################################################
-    # 从股票字典获取股票代码和交易市场
-    #################################################
-    def get_stockid_market_sh_sz(self):
-        # for stockId in self.stockDict["timeToMarket"]:
-        for stockId in self.stockDict[pf.股票清单表头[1]]:
-            # print(stockId)
-            if self.stockDict[pf.股票清单表头[21]][stockId] == 0:
-                market = 'SZ'
-            else:
-                market = 'SH'
-            self.stock_id_market_sh_sz.append([stockId,market])
-
-    #################################################
-    # 从股票字典获取股票代码和交易市场
-    #################################################
-    def get_stockid_market(self):
-        # for stockId in self.stockDict["timeToMarket"]:
-        for stockId in self.stockDict[pf.股票清单表头[1]]:
-            # print(stockId)
-            self.stock_id_market.append([stockId, self.stockDict[pf.股票清单表头[21]][stockId]])
-
-    #################################################
-    # 从股票字典获取股票代码除去《总市值》为空的，也就是去除退市和未上市的股票id
-    #################################################
-    def getStockIdWithoutNone(self):
-        # for stockId in self.stockDict["timeToMarket"]:
-        for stockId in self.stockDict[pf.股票清单表头[1]]:
-            # print(stockId)
-            # print(pf.股票清单表头[16])
-            # print(self.stockDict[pf.股票清单表头[16]][stockId])
-            if self.stockDict[pf.股票清单表头[16]][stockId] != '-':
-                self.stockIdListWithoutNone.append(str(stockId))
-        self.stockIdListWithoutNone.sort()
-
-    #################################################
-    # 从股票字典获取股票代码获取《总市值》为空的，也就是获取退市和未上市的股票id
-    #################################################
-    def getStockIdWithNone(self):
-        # for stockId in self.stockDict["timeToMarket"]:
-        for stockId in self.stockDict[pf.股票清单表头[1]]:
-            # print(stockId)
-            # print(pf.股票清单表头[16])
-            # print(self.stockDict[pf.股票清单表头[16]][stockId])
-            if self.stockDict[pf.股票清单表头[16]][stockId] == '-':
-                self.stockIdListWithNone.append(str(stockId))
-        self.stockIdListWithNone.sort()
-
-
+def 处理单个dataframe(df):
+    df['date2'] = pd.to_datetime(df['日期'], infer_datetime_format=True)#将字符串转换为日期
+    df['YearMonth'] = df['date2'].map(lambda x: x.strftime('%Y-%m'))
+    df = df.groupby(['YearMonth','股票代码','股票名称'])['持股数量占A股百分比'].mean()
+    # print(df)
+    df = pd.DataFrame(df).reset_index()
+    # print(df)
+    df.columns = ['日期', '股票代码', '股票名称','持股数量占A股百分比-月平均']
+    df1 = df[['股票代码', '股票名称']]
+    df1= df1.drop_duplicates(keep='first')
+    if len(df1) > 1:
+        df1= df1.head(1)
+        return None
+    if len(df1) < 1:
+        return None
+    # print(df1)
+    df = df[['日期','持股数量占A股百分比-月平均']]
+    # df = df.set_index(keys=['股票代码', '股票名称'])
+    df = df.set_index(keys=['日期'])
+    # print(df)
+    # print("$$$$$$$$$$$$$$$$$$$$")
+    df = df.T
+    # print(df)
+    # print("$$$$$$$$$$$$$$$$$$$$")
+    # print(df.info())
+    df = df.reset_index()
+    df = pd.concat([df,df1],axis=1)
+    # print(df)
+    df = df.drop('index', 1)
+    df = df.set_index(keys=['股票代码','股票名称'])
+    # print(df)
+    return df
 
 if __name__ == '__main__':
-    aa = StockDict()
-    #print(aa.stockDict["timeToMarket"])
-    #print(aa.stockDict)
-    # for stockId in aa.stockDict[pf.股票清单表头[1]]:
-    #     print(stockId, aa.stockDict[pf.股票清单表头[1]][stockId])
-    #for stockId in aa.stockDict["timeToMarket"]:
-        #print(stockId,aa.stockDict["timeToMarket"][stockId])
+    # 沪深港通持股_instance = 沪深港通持股()
+    # df = joblib.load(沪深港通持股_instance.dirname_步骤二 + "aaa" + pf.GZ, mmap_mode=None)
+    # 处理单个dataframe(df)
 
-    #print(aa.stockDict)
-
-    # for element in aa.stockIdList:
-    #     #pass
-    #     print(element)
-
-    # for e in aa.stock_id_market:
-    #     print(e)
-    #
-    # for e in aa.stock_id_market_sh_sz:
-    #     print(e)
-
-    for element in aa.stockIdListWithNone:
-        #pass
-        print(element)
+    df = 处理整个文件()
+    print(df)
+    保存dataframe(df)
