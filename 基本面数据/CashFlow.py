@@ -1,15 +1,15 @@
+from pathlib import Path
 import tushare as ts
-
 from 函数目录 import profile as pf, date
-
-from 函数目录.function import checkAndCreateDir
-
 
 class CashFlow:
     # 初始化
     def __init__(self):
         # 文件存放的目录
-        self.CashFlow = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.CashFlow + pf.SEPARATOR
+        self.CashFlow = Path(pf.GLOBAL_PATH ,pf.FUNDAMENTAL_DATA , pf.CashFlow)
+        self.CashFlow.mkdir(exist_ok=True, parents=True)
+
+        # self.CashFlow = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.CashFlow + pf.SEPARATOR
         # 年
         self.YEAR = ""
         # 季度
@@ -22,9 +22,9 @@ class CashFlow:
     #################################################
     def getCashFlow(self):
         try:
-            checkAndCreateDir(self.CashFlow)
             data = ts.get_cashflow_data(self.YEAR, self.QUARTER)
-            filename = '%s%i%i%s' % (self.CashFlow, self.YEAR, self.QUARTER, ".xlsx")
+            filename = Path(self.CashFlow, str(self.YEAR) + str(self.QUARTER) + pf.Execl)
+            # filename = '%s%i%i%s' % (self.CashFlow, self.YEAR, self.QUARTER, ".xlsx")
             data.to_excel(filename)
             # 可以增加csv文件保存
             # filename = '%s%i%i%s' % (self.CashFlow, self.YEAR, self.QUARTER, ".csv")

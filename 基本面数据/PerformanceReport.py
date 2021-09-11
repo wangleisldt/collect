@@ -1,14 +1,15 @@
 import tushare as ts
-
+from pathlib import Path
 from 函数目录 import profile as pf, date
 
-from 函数目录.function import checkAndCreateDir
 
 class PerformanceReport:
     # 初始化
     def __init__(self):
         #文件存放的目录
-        self.PerformanceReport = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.PerformanceReport + pf.SEPARATOR
+        self.PerformanceReport = Path(pf.GLOBAL_PATH, pf.FUNDAMENTAL_DATA, pf.PerformanceReport)
+        self.PerformanceReport.mkdir(exist_ok=True, parents=True)
+        # self.PerformanceReport = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.PerformanceReport + pf.SEPARATOR
         #年
         self.YEAR = ""
         #季度
@@ -21,9 +22,10 @@ class PerformanceReport:
 #################################################
     def getPerformanceReport(self):
         try:
-            checkAndCreateDir(self.PerformanceReport)
+            # checkAndCreateDir(self.PerformanceReport)
             data = ts.get_report_data(self.YEAR, self.QUARTER)
-            filename = '%s%i%i%s' % (self.PerformanceReport,self.YEAR,self.QUARTER,".xlsx")
+            filename = Path(self.PerformanceReport, str(self.YEAR) + str(self.QUARTER) + pf.Execl)
+            # filename = '%s%i%i%s' % (self.PerformanceReport,self.YEAR,self.QUARTER,".xlsx")
             data.to_excel(filename)
             #可以增加csv文件保存
             #filename = '%s%i%i%s' % (self.PerformanceReport, self.YEAR, self.QUARTER, ".csv")

@@ -1,14 +1,15 @@
 import tushare as ts
-
+from pathlib import Path
 from 函数目录 import profile as pf, date
 
-from 函数目录.function import checkAndCreateDir
 
 class GrowthAbility:
     # 初始化
     def __init__(self):
         #文件存放的目录
-        self.GrowthAbility = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.GrowthAbility + pf.SEPARATOR
+        self.GrowthAbility = Path(pf.GLOBAL_PATH, pf.FUNDAMENTAL_DATA, pf.GrowthAbility)
+        self.GrowthAbility.mkdir(exist_ok=True, parents=True)
+        # self.GrowthAbility = pf.GLOBAL_PATH + pf.SEPARATOR + pf.FUNDAMENTAL_DATA + pf.SEPARATOR + pf.GrowthAbility + pf.SEPARATOR
         #年
         self.YEAR = ""
         #季度
@@ -21,9 +22,10 @@ class GrowthAbility:
 #################################################
     def getGrowthAbility(self):
         try:
-            checkAndCreateDir(self.GrowthAbility)
+            # checkAndCreateDir(self.GrowthAbility)
             data = ts.get_growth_data(self.YEAR, self.QUARTER)
-            filename = '%s%i%i%s' % (self.GrowthAbility,self.YEAR,self.QUARTER,".xlsx")
+            filename = Path(self.GrowthAbility, str(self.YEAR) + str(self.QUARTER) + pf.Execl)
+            # filename = '%s%i%i%s' % (self.GrowthAbility,self.YEAR,self.QUARTER,".xlsx")
             data.to_excel(filename)
             #可以增加csv文件保存
             #filename = '%s%i%i%s' % (self.GrowthAbility, self.YEAR, self.QUARTER, ".csv")
