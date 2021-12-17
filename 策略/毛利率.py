@@ -125,14 +125,15 @@ class  GrossProfitRatePolicy():
 
 if __name__ == '__main__':
     #获取股票清单列表
-    stockIdListInstance = sd.StockDict()
+    stockIdListInstance = sd()
 
     # 对这批股票清单进行处理，季度
-    GrossProfitRateListInstance = GrossProfitRatePolicy( StockIdList=stockIdListInstance.stockIdList , Year="2017", Length=6, Quarter="2" ,Type = "Quator")
+    GrossProfitRateListInstance = GrossProfitRatePolicy( StockIdList=stockIdListInstance.stockIdList , Year="2021", Length=18, Quarter="2" ,Type = "Quator")
 
     # 对这批股票清单进行处理，年度
     #growthAbilityListInstance = GrowthPolicy(StockIdList=stockIdListInstance.stockIdList, Year="2017", Length=8,Quarter="2", Type="Year")
 
     aa = GrossProfitRateListInstance.GrossProfitRateCalculate()
+    print(aa)
 
-    aa.to_excel("c:\\毛利率.xlsx")
+    aa.to_excel("/home/wangleisldt/毛利率1.xlsx")
