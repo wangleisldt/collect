@@ -60,6 +60,7 @@ def 根据全量股票进行获取(year, quarter,report_type_in):
         company_type = 读取企业类型()
         if stockid in company_type.keys():
             instance = 采集标准类(url = _根据参数产生url(stockid,market,report_type,end_date = end_date , company_type_dict = company_type ))
+            print(_根据参数产生url(stockid,market,report_type,end_date = end_date , company_type_dict = company_type ))
             return_list = instance._获取数据_json()
             if report_type != 'MainTarget':
                 if return_list is not None:
@@ -130,6 +131,7 @@ def _根据参数产生url(stockid,market,type,end_date,company_type_dict):
     else:
         url = 'http://f10.eastmoney.com/NewFinanceAnalysis/{}Ajax?companyType={}&reportDateType=0&reportType=1&endDate={}&code={}{}'.format(type,company_type_dict[stockid],end_date,market,stockid )
     #print(url)
+    # http://f10.eastmoney.com/NewFinanceAnalysis/xjllbAjaxNew?companyType=4&reportDateType=0&reportType=1&dates=2021-09-30%2C2021-06-30%2C2021-03-31%2C2020-12-31%2C2020-09-30&code=SZ300059
     return url
 
 def _处理返回值(list,date,type):
@@ -175,7 +177,7 @@ if __name__ == '__main__':
 
     #获取全部季度数据(2018,1)
 
-    根据全量股票进行获取(2020,1 , '主要指标')
+    根据全量股票进行获取(2021,4 , '主要指标')
     # 根据全量股票进行获取( 2020,4 , '资产负债表')
     # 根据全量股票进行获取(2015, 2, '现金流量表')
     # 根据全量股票进行获取(2015, 2, '利润表')
